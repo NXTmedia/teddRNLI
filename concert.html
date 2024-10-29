@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Image Display</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .image-container {
+            max-width: 100%;
+            max-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            max-width: 1414px;
+            max-height: 2000px;
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container">
+<img src="concert.jpg" alt="Concert" width="1414" height="2000">    </div>
+</body>
+</html>
