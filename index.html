@@ -3,120 +3,177 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teddington Lifeboat Station</title>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <title>Teddington RNLI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Open Sans', sans-serif;
       margin: 0;
       padding: 0;
       background-color: #f8f8f8;
-    }
-      .header {
-      background-color: #002663;
-      color: white;
-      padding: 1.5em 1em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8em;
-      font-weight: 600;
-      text-align: left;
+      color: #333; /* Default text color for content */
     }
 
-     .footer {
+    .header {
+      background-color: #002663; /* RNLI Blue */
+      color: white;
+      padding: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* Pushes logo to the right */
+    }
+
+    .header-text h1 {
+      font-size: 1.6em; /* Adjusted for two lines */
+      font-weight: 600;
+      margin: 0 0 0.2em 0;
+      line-height: 1.2;
+       color: #FFFFFF; /* RNLI Blue for headings */
+    }
+
+    .header-text .subtitle {
+      font-size: 1em;
+      font-weight: 400;
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    .header img {
+      width: 60px; /* Slightly smaller for mobile header */
+      height: 60px;
+      margin-left: 1em; /* Space between text and logo */
+    }
+
+    .content-section {
+      padding: 1.5em 1em;
+      background-color: white;
+      margin-bottom: 10px; /* Space between sections */
+    }
+    .content-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .content-section h2 {
+      font-size: 1.4em;
+      font-weight: 600;
+      color: #002663; /* RNLI Blue for headings */
+      margin-top: 0;
+      margin-bottom: 0.75em;
+      border-bottom: 2px solid #F28B00; /* RNLI Orange accent */
+      padding-bottom: 0.25em;
+    }
+
+    .content-section p, .content-section li {
+      font-size: 1em;
+      line-height: 1.6;
+      margin-bottom: 0.5em;
+    }
+
+
+ 
+
+
+
+
+    .map-container {
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 75%; /* 4:3 aspect ratio, adjust as needed e.g. 56.25% for 16:9 */
+      height: 0;
+      margin-bottom: 10px;
+    }
+
+    .map-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .location-address {
+        font-weight: 600;
+        margin-bottom: 0.75em !important;
+    }
+
+    .map-link {
+      display: inline-block;
+      background-color: #F28B00; /* RNLI Orange */
+      color: #002663; /* RNLI Blue text */
+      padding: 0.8em 1.2em;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 5px;
+      text-align: center;
+      margin-top: 0.5em;
+      transition: background-color 0.3s ease;
+    }
+
+    .map-link:hover, .map-link:focus {
+      background-color: #d97900; /* Darker orange on hover */
+    }
+
+    .footer {
       background-color: #002663;
       color: white;
       padding: 1.5em 1em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.5em;
-      font-weight: 300;
-      text-align: left;
-    }
-    .header img {
-      margin-left: auto;
-      width: 80px;
-      height: 80px; /* Adjusted size for alignment; can be set to auto if you want to keep it 168x168 */
-    }    .section {
-      position: relative;
       text-align: center;
-      color: white;
+      font-size: 0.8em; /* Slightly larger for better readability */
+      font-weight: 400;
+      line-height: 1.4;
     }
-    .section img {
-      width: 100%;
-      height: auto;
-      display: block;
+    .footer img { /* Hide the hit counter visually but keep for tracking */
+        display: none;
     }
-    .section .overlay-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: rgba(0, 0, 0, 0.4);
-      padding: 0.5em;
-      width: 100%;
-      font-weight: 500;
-      font-size: 1.7em;
-    }
-    .section a {
-      color: white;
-      text-decoration: none;
-      display: block;
-    }
-    .button-section {
-      background-color: #F28B00;
-      text-align: center;
-      padding: 1em;
-    }
-    .button-section a {
-      color: black;
-      font-weight: 500;
-      font-size: 1.6em;
-      text-decoration: none;
-      display: block;
-    }
+
   </style>
 </head>
 <body>
+
 <div class="header">
-  <span>Teddington Lifeboat Station</span>
+  <div class="header-text">
+    <h1>Teddington RNLI Open Day</h1>
+    
+  </div>
   <img src="rnli.png" alt="RNLI Logo">
 </div>
-<div class="section">
-  <a href="https://rnli.org/find-my-nearest/lifeboat-stations/teddington-lifeboat-station">
-    <img src="about-the-station.jpg" alt="About the Station">
-    <div class="overlay-text">About the station</div>
-  </a>
+
+<div class="content-section">
+  <h1>OPEN DAY 2025</h1>
+  <h2>Event Details</h2>
+  <p><strong>Date:</strong> Sunday 8th of June</p>
+  <p><strong>Time:</strong> 12:30pm - 3:30pm</p>
+  <p><strong>Location:</strong></p>
+  <p class="location-address">
+    RNLI Teddington Lifeboat Station,<br>
+    Fairmile House,<br>
+    30 Twickenham Rd,<br>
+    Teddington, TW11 8AB
+  </p>
+  <a href="https://www.google.com/maps/search/?api=1&query=RNLI+Teddington+Lifeboat+Station%2C+Fairmile+House%2C+30+Twickenham+Rd%2C+Teddington%2C+TW11+8AB" target="_blank" class="map-link">Get Directions on Google Maps</a>
 </div>
 
-<div class="section">
-  <a href="https://youtu.be/oTAwAS9zBuY?feature=shared">
-    <img src="d-class-inshore-lifeboat.jpg" alt="D Class Inshore Lifeboat">
-    <div class="overlay-text">D Class inshore lifeboat</div>
-  </a>
+<div class="map-container">
+ <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2487.4873976553354!2d-0.32827322239649037!3d51.430842316291944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48760c7f86d8db69%3A0xd45ee32c3fcbc779!2sRNLI%20Teddington%20Lifeboat%20Station!5e0!3m2!1sen!2suk!4v1747666475096!5m2!1sen!2suk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 </div>
 
-<div class="section">
-  <a href="https://rnli.org/what-we-do/lifeboats-and-stations/what-it-takes-to-launch-a-lifeboat">
-    <img src="launching-a-lifeboat.jpg" alt="Launching a Lifeboat">
-    <div class="overlay-text">Launching a lifeboat</div>
-  </a>
+<div class="content-section">
+  <h2>What's Happening?</h2>
+  <ul>
+    <li>Duck Race on the Thames</li>
+    <li>Local Food & Drink Stalls</li>
+    <li>Lifeboat Demonstrations</li>
+    <li>Fun Activities for All Ages</li>
+  </ul>
 </div>
-
-<div class="section">
-  <a href="https://rnli.org/what-we-do/lifeboats-and-stations/lifeboat-crew-training">
-    <img src="lifeboat-crew-training.jpg" alt="Lifeboat Crew Training">
-    <div class="overlay-text">Lifeboat crew training</div>
-  </a>
+<div class="content-section">
+<p class="subtitle">Support your local volunteer crew</p>
 </div>
-<div  class="footer">
-Royal National Lifeboat Institution (RNLI), a charity registered in England and Wales (209603), Scotland (SC037736), the Republic of Ireland (20003326) and the Bailiwick of Jersey (14)
- <img height=1 Width=1 src='https://www.free-website-hit-counter.com/zc.php?d=9&id=1044&s=10' border='0' alt='Free Website Hit Counter'>
-
+<div class="footer">
+  Royal National Lifeboat Institution (RNLI), a charity registered in England and Wales (209603), Scotland (SC037736), the Republic of Ireland (20003326) and the Bailiwick of Jersey (14).
+  <img height=1 Width=1 src='https://www.free-website-hit-counter.com/zc.php?d=9&id=1044&s=10' border='0' alt='Free Website Hit Counter'>
 </div>
-
 
 </body>
 </html>
