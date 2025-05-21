@@ -40,8 +40,8 @@
     }
 
     .header img {
-      width: 60px; /* Slightly smaller for mobile header */
-      height: 60px;
+      height: 60px; /* Fixed height */
+      width: auto; /* Width will scale automatically */
       margin-left: 1em; /* Space between text and logo */
     }
 
@@ -128,7 +128,7 @@
       background-color: #002663;
       color: white;
       padding: 1.5em 1em;
-      text-align: center;
+      text-align: left;
       font-size: 0.8em; 
       font-weight: 400;
       line-height: 1.4;
@@ -146,6 +146,19 @@
       margin: 1em 0;
     }
 
+    .image-grid {
+      display: flex;
+      gap: 1em;
+      margin: 1.5em 0;
+    }
+
+    .image-grid img {
+      width: 50%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
   </style>
 </head>
 <body>
@@ -155,13 +168,16 @@
     <h1>Teddington RNLI Lifeboat Station</h1>
     
   </div>
-  <img src="rnli.png" alt="RNLI Logo">
+  <img src="img/logo2.png" alt="RNLI Logo">
 </div>
 
 <div class="content-section-header">
   <img src="img/q3.jpg" alt="RNLI Open Day 2025" class="event-image">
 </div>
 <div class="content-section">
+
+
+
   <h2>What's Happening?</h2>
   
   <p>Come and enjoy a day of fun and excitement at the Teddington RNLI Lifeboat Station! Bring your family and friends to experience the thrill of our lifeboat demonstrations, indulge in delicious local food and drink, and participate in our family-friendly activities.</p>
@@ -172,6 +188,11 @@
     <li>Lifeboat Demonstrations</li>
     <li>Fun Activities for All Ages</li>
   </ul>
+
+  <div class="image-grid">
+    <img src="img/tea.jpg" alt="Tea at RNLI Open Day">
+    <img src="img/coffee.jpg" alt="Coffee at RNLI Open Day">
+  </div>
 
   <h2>Event Details</h2>
 
@@ -192,9 +213,7 @@
 <div class="map-container">
  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2487.4873976553354!2d-0.32827322239649037!3d51.430842316291944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48760c7f86d8db69%3A0xd45ee32c3fcbc779!2sRNLI%20Teddington%20Lifeboat%20Station!5e0!3m2!1sen!2suk!4v1747666475096!5m2!1sen!2suk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 </div>
-<div class="content-section">
-<p class="subtitle">Support your local volunteer crew</p>
-</div>
+
 <div class="footer">
   Royal National Lifeboat Institution (RNLI), a charity registered in England and Wales (209603), Scotland (SC037736), the Republic of Ireland (20003326) and the Bailiwick of Jersey (14).
   <img height=1 Width=1 src='https://www.free-website-hit-counter.com/zc.php?d=9&id=1044&s=10' border='0' alt='Free Website Hit Counter'>
