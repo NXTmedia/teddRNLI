@@ -21,6 +21,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between; /* Pushes logo to the right */
+      margin-bottom: 0; /* Remove bottom margin */
     }
 
     .header-text h1 {
@@ -42,6 +43,21 @@
       width: 60px; /* Slightly smaller for mobile header */
       height: 60px;
       margin-left: 1em; /* Space between text and logo */
+    }
+
+    .content-section-header {
+      padding: 0;
+      margin: 0;
+      background-color: white;
+      width: 100%;
+    }
+
+    .content-section-header img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0;
+      border-radius: 0;
     }
 
     .content-section {
@@ -68,12 +84,6 @@
       line-height: 1.6;
       margin-bottom: 0.5em;
     }
-
-
- 
-
-
-
 
     .map-container {
       position: relative;
@@ -127,6 +137,15 @@
         display: none;
     }
 
+    /* Add new styles for the image */
+    .event-image {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin: 1em 0;
+    }
+
   </style>
 </head>
 <body>
@@ -139,21 +158,25 @@
   <img src="rnli.png" alt="RNLI Logo">
 </div>
 
-<div class="content-section">
- 
-  <h1>OPEN DAY 2025</h1>
- 
-
+<div class="content-section-header">
+  <img src="img/q3.jpg" alt="RNLI Open Day 2025" class="event-image">
+</div>
 <div class="content-section">
   <h2>What's Happening?</h2>
+  
+  <p>Come and enjoy a day of fun and excitement at the Teddington RNLI Lifeboat Station! Bring your family and friends to experience the thrill of our lifeboat demonstrations, indulge in delicious local food and drink, and participate in our family-friendly activities.</p>
+  
   <ul>
     <li>Duck Race on the Thames</li>
     <li>Local Food & Drink Stalls</li>
     <li>Lifeboat Demonstrations</li>
     <li>Fun Activities for All Ages</li>
   </ul>
-</div>
- <h2>Event Details</h2>
+
+  <h2>Event Details</h2>
+
+
+  
   <p><strong>Date:</strong> Sunday 8th of June</p>
   <p><strong>Time:</strong> 12:30pm - 3:30pm</p>
   <p><strong>Location:</strong></p>
