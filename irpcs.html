@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NavPal — IRPCS Revision</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 50: '#f0f4f8', 100: '#d9e2ec', 200: '#bcccdc', 300: '#9fb3c8', 400: '#829ab1', 500: '#627d98', 600: '#486581', 700: '#334e68', 800: '#243b53', 900: '#102a43' },
+            sea: { 50: '#e0fcff', 100: '#bef8fd', 200: '#87eaf2', 300: '#54d1db', 400: '#38bec9', 500: '#2cb1bc', 600: '#14919b', 700: '#0e7c86', 800: '#0a6c74', 900: '#044e54' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .rule-content p { margin-bottom: 0.75rem; }
+    .rule-content ul { list-style: none; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+    .rule-content ul li { margin-bottom: 0.4rem; position: relative; }
+    .rule-content ul li::before { content: ''; position: absolute; left: -1rem; top: 0.6em; width: 5px; height: 5px; background: #2cb1bc; border-radius: 50%; }
+    .rule-content .sub-list { padding-left: 1.5rem; }
+    .rule-content .sub-list li::before { background: #829ab1; width: 4px; height: 4px; }
+    .sidebar-item { transition: all 0.15s ease; }
+    .sidebar-item:hover { background: rgba(44, 177, 188, 0.1); }
+    .sidebar-item.active { background: rgba(44, 177, 188, 0.15); border-left-color: #2cb1bc; }
+    .quiz-option { transition: all 0.2s ease; }
+    .quiz-option:hover:not(.answered) { border-color: #2cb1bc; background: rgba(44, 177, 188, 0.05); transform: translateY(-1px); }
+    .quiz-option.correct { border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
+    .quiz-option.incorrect { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; left: -100%; top: 64px; bottom: 0; width: 85%; z-index: 40; transition: left 0.3s ease; }
+      .sidebar.open { left: 0; }
+      .sidebar-overlay { display: none; position: fixed; inset: 0; top: 64px; background: rgba(0,0,0,0.4); z-index: 35; }
+      .sidebar-overlay.open { display: block; }
+    }
+  </style>
+</head>
+<body class="bg-navy-50 text-navy-900 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-navy-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="menuBtn" class="md:hidden p-2 rounded-lg hover:bg-navy-800" onclick="toggleSidebar()">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight">NavPal</h1>
+          <p class="text-xs text-navy-300 hidden sm:block">IRPCS — ALB/ILB Navigator Revision</p>
+        </div>
+      </div>
+      <nav class="flex gap-1">
+        <button onclick="showView('rules')" id="tabRules" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition bg-sea-700 text-white">Rules</button>
+        <button onclick="showView('quiz')" id="tabQuiz" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition text-navy-300 hover:text-white hover:bg-navy-800">Quiz</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex relative max-w-7xl mx-auto w-full" style="height: calc(100vh - 64px); overflow: hidden;">
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar w-72 bg-white border-r border-navy-100 overflow-y-auto flex-shrink-0 shadow-sm">
+      <div class="p-4">
+        <input type="text" id="ruleSearch" placeholder="Search rules..." oninput="filterRules(this.value)"
+          class="w-full px-3 py-2 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sea-500 focus:border-transparent bg-navy-50">
+      </div>
+      <nav id="ruleNav" class="pb-4"></nav>
+    </aside>
+
+    <!-- Rules View -->
+    <main id="rulesView" class="flex-1 p-4 md:p-8 overflow-y-auto">
+      <div id="ruleContent" class="max-w-3xl mx-auto">
+        <div class="text-center py-16 text-navy-400">
+          <svg class="w-16 h-16 mx-auto mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <p class="text-lg font-medium">Select a rule from the sidebar</p>
+          <p class="text-sm mt-1">Browse the IRPCS regulations by part and section</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Quiz View -->
+    <div id="quizView" class="flex-1 p-4 md:p-8 overflow-y-auto hidden">
+      <div class="max-w-2xl mx-auto">
+
+        <!-- Quiz Start -->
+        <div id="quizStart" class="text-center py-16 fade-in">
+          <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+            <div class="w-20 h-20 bg-sea-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-10 h-10 text-sea-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-navy-900 mb-3">IRPCS Quiz</h2>
+            <p class="text-navy-500 mb-8 max-w-md mx-auto">Test your knowledge of the International Regulations for Preventing Collisions at Sea. 20 multiple-choice questions, randomised each time.</p>
+            <button onclick="startQuiz()" class="bg-sea-600 hover:bg-sea-700 text-white font-semibold px-8 py-3 rounded-xl transition shadow-md hover:shadow-lg">Start Quiz</button>
+          </div>
+        </div>
+
+        <!-- Quiz Question -->
+        <div id="quizQuestion" class="hidden fade-in">
+          <div class="mb-6 flex items-center justify-between">
+            <span id="qProgress" class="text-sm font-medium text-navy-500">Question 1 of 20</span>
+            <span id="qScore" class="text-sm font-medium text-sea-700">Score: 0</span>
+          </div>
+          <div class="w-full bg-navy-100 rounded-full h-2 mb-8">
+            <div id="qProgressBar" class="bg-sea-500 h-2 rounded-full transition-all duration-500" style="width: 5%"></div>
+          </div>
+          <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+            <p id="qCategory" class="text-xs font-semibold text-sea-600 uppercase tracking-wider mb-2"></p>
+            <h3 id="qText" class="text-lg md:text-xl font-semibold text-navy-900 mb-6 leading-relaxed"></h3>
+            <div id="qOptions" class="space-y-3"></div>
+            <div id="qFeedback" class="hidden mt-6 p-4 rounded-xl text-sm"></div>
+            <button id="qNext" class="hidden mt-6 w-full bg-sea-600 hover:bg-sea-700 text-white font-semibold py-3 rounded-xl transition" onclick="nextQuestion()">Next Question</button>
+          </div>
+        </div>
+
+        <!-- Quiz Result -->
+        <div id="quizResult" class="hidden fade-in">
+          <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
+            <div id="resultIcon" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6"></div>
+            <h2 id="resultTitle" class="text-2xl font-bold mb-2"></h2>
+            <p id="resultScore" class="text-4xl font-bold text-sea-600 mb-2"></p>
+            <p id="resultMsg" class="text-navy-500 mb-8"></p>
+            <div class="flex gap-3 justify-center">
+              <button onclick="startQuiz()" class="bg-sea-600 hover:bg-sea-700 text-white font-semibold px-6 py-3 rounded-xl transition">Try Again</button>
+              <button onclick="showView('rules')" class="bg-navy-100 hover:bg-navy-200 text-navy-700 font-semibold px-6 py-3 rounded-xl transition">Review Rules</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+<script>
+// ==================== RULE DATA ====================
+const rules = [
+  {
+    part: "A", partTitle: "General", section: null,
+    number: 1, title: "Application",
+    content: `<p>(a) These rules shall apply to all vessels upon the high seas and in all waters connected therewith navigable by seagoing vessels.</p>
+<p>(b) Nothing in these rules shall interfere with the operation of special rules made by an appropriate authority for roadsteads, harbours, rivers, lakes or inland waterways connected with the high seas and navigable by seagoing vessels. Such special rules shall conform as closely as possible to these rules.</p>
+<p>(c) Nothing in these rules shall interfere with the operation of any special rules made by the Government of any State with respect to additional station or signal lights, shapes or whistle signals for ships of war and vessels proceeding under convoy, or with respect to additional station or signal lights or shapes for fishing vessels engaged in fishing as a fleet.</p>
+<p>(d) Traffic separation schemes may be adopted by the Organisation for the purpose of these rules.</p>
+<p>(e) Whenever the Government concerned shall have determined that a vessel of special construction or purpose cannot comply fully with the provision of any of these rules with respect to the number, position, range or arc of visibility of lights or shapes, as well as to the disposition and characteristics of sound-signalling appliances, such vessel shall comply with such other provisions as her Government shall have determined to be the closest possible compliance with these rules.</p>`
+  },
+  {
+    part: "A", partTitle: "General", section: null,
+    number: 2, title: "Responsibility",
+    content: `<p>(a) Nothing in these rules shall exonerate any vessel, or the owner, master or crew thereof, from the consequences of any neglect to comply with these rules or of the neglect of any precautions which may be required by the ordinary practice of seamen, or by the special circumstances of the case.</p>
+<p>(b) In construing and complying with these rules due regard shall be had to all dangers of navigation and collision and to any special circumstances, including the limitations of the vessels involved, which may make a departure from these rules necessary to avoid immediate danger.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section I: Conduct of Vessels in Any Condition of Visibility",
+    number: 5, title: "Lookout",
+    content: `<p>Every vessel shall at all times maintain a proper look-out by sight and hearing as well as by all available means appropriate in the prevailing circumstances and conditions so as to make a full appraisal of the situation and of the risk of collision.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section I: Conduct of Vessels in Any Condition of Visibility",
+    number: 6, title: "Safe Speed",
+    content: `<p>Every vessel shall at all times proceed at a safe speed so that she can take proper and effective action to avoid a collision and be stopped within a distance appropriate to the prevailing circumstances and conditions.</p>
+<p>In determining a safe speed the following factors shall be among those taken into account:</p>
+<p><strong>(a) By all vessels:</strong></p>
+<ul>
+<li>(i) the state of visibility;</li>
+<li>(ii) the traffic density including concentrations of fishing vessels or any other vessels;</li>
+<li>(iii) the manoeuvrability of the vessel with special reference to stopping distance and turning ability in the prevailing conditions;</li>
+<li>(iv) at night the presence of background light such as from shore lights or from back scatter of her own lights;</li>
+<li>(v) the state of wind, sea and current, and the proximity of navigational hazards;</li>
+<li>(vi) the draught in relation to the available depth of water.</li>
+</ul>
+<p><strong>(b) Additionally, by vessels with operational radar:</strong></p>
+<ul>
+<li>(i) the characteristics, efficiency and limitations of the radar equipment;</li>
+<li>(ii) any constraints imposed by the radar range scale in use;</li>
+<li>(iii) the effect on radar detection of the sea state, weather and other sources of interference;</li>
+<li>(iv) the possibility that small vessels, ice and other large floating objects may not be detected by radar at an adequate range;</li>
+<li>(v) the number, location and movements of vessels detected by radar;</li>
+<li>(vi) the more exact assessment of the visibility that may be possible when radar is used to determine the range of vessels or other objects in the vicinity.</li>
+</ul>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section I: Conduct of Vessels in Any Condition of Visibility",
+    number: 7, title: "Risk of Collision",
+    content: `<p>(a) Every vessel shall use all available means appropriate to the prevailing circumstances and conditions to determine if risk of collision exists. If there is any doubt such risk shall be deemed to exist.</p>
+<p>(b) Proper use shall be made of radar equipment if fitted and operational, including long-range scanning to obtain early warning of risk of collision and radar plotting or equivalent systematic observations of detected objects.</p>
+<p>(c) Assumptions shall not be made on the basis of scanty information, especially scanty radar information.</p>
+<p>(d) In determining if risk of collision exists the following considerations shall be among those taken into account:</p>
+<ul>
+<li>(i) such risk shall be deemed to exist if the compass bearing of an approaching vessel does not appreciably change;</li>
+<li>(ii) such risk may sometimes exist even when an appreciable bearing change is evident, particularly when approaching a very large vessel or a tow or when approaching a vessel at close range.</li>
+</ul>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section I: Conduct of Vessels in Any Condition of Visibility",
+    number: 8, title: "Action to Avoid a Collision",
+    content: `<p>(a) Any action taken to avoid collision shall be taken in accordance with the Rules of this Part and shall, if the circumstances of the case admit, be positive, made in ample time and with due regard to the observance of good seamanship.</p>
+<p>(b) Any alteration of course and/or speed to avoid collision shall, if the circumstances of the case admit, be large enough to be readily apparent to another vessel observing visually or by radar; a succession of small alterations of course and/or speed should be avoided.</p>
+<p>(c) If there is sufficient sea room, alteration of course alone may be the most effective action to avoid a close-quarters situation provided that it is made in good time, is substantial and does not result in another close-quarters situation.</p>
+<p>(d) Action taken to avoid a collision with another vessel shall be such as to result in passing at a safe distance. The effectiveness of the action shall be carefully checked until the other vessel is finally past and clear.</p>
+<p>(e) If necessary to avoid collision or allow more time to assess the situation, a vessel shall slacken her speed or take all way off by stopping or reversing her means of propulsion.</p>
+<p>(f)</p>
+<ul>
+<li>(i) A vessel which, by any of these Rules, is required not to impede the passage or safe passage of another vessel shall, when required by the circumstances of the case, take early action to allow sufficient sea room for the safe passage of the other vessel.</li>
+<li>(ii) A vessel required not to impede the passage or safe passage of another vessel is not relieved of this obligation if approaching the other vessel so as to involve risk of collision.</li>
+<li>(iii) A vessel, the passage of which is not to be impeded, remains fully obliged to comply with the Rules of this part when the two vessels are approaching one another so as to involve risk of collision.</li>
+</ul>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section I: Conduct of Vessels in Any Condition of Visibility",
+    number: 9, title: "Narrow Channels",
+    content: `<p>(a) A vessel proceeding along the course of a narrow channel or fairway shall keep as near to the outer limit of the channel or fairway which lies on her <strong>starboard side</strong> as is safe and practicable.</p>
+<p>(b) A vessel of less than 20 metres in length or a sailing vessel shall not impede the passage of a vessel which can safely navigate only within a narrow channel or fairway.</p>
+<p>(c) A vessel engaged in fishing shall not impede the passage of any other vessel navigating within a narrow channel or fairway.</p>
+<p>(d) A vessel shall not cross a narrow channel or fairway if such crossing impedes the passage of a vessel which can safely navigate only within such channel or fairway. The latter vessel may use the sound signal prescribed in Rule 34(d) if in doubt as to the intention of the crossing vessel.</p>
+<p>(e)</p>
+<ul>
+<li>(i) In a narrow channel or fairway when overtaking can only take place if the vessel to be overtaken has to take action to permit safe passing, the vessel intending to overtake shall indicate her intention by sounding the appropriate signal prescribed in Rule 34(c)(i). The vessel to be overtaken shall, if in agreement, sound the appropriate signal prescribed by Rule 34(c)(ii).</li>
+<li>(ii) This rule does not relieve the overtaking vessel of her obligation under Rule 13.</li>
+</ul>
+<p>(f) A vessel nearing a bend or an area of narrow channel or fairway where other vessels may be obscured by an intervening obstruction shall navigate with particular alertness and caution and shall sound the appropriate signal prescribed in Rule 34(e).</p>
+<p>(g) Any vessel shall, if the circumstances of the case admit, avoid anchoring in a narrow channel.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section I: Conduct of Vessels in Any Condition of Visibility",
+    number: 10, title: "Traffic Separation Schemes",
+    content: `<p>(a) This rule applies to traffic separation schemes adopted by the organisation and does not relieve any vessel of her obligation under any other Rule.</p>
+<p>(b) A vessel using a traffic separation scheme shall:</p>
+<ul>
+<li>(i) proceed in the appropriate traffic lane in the general direction of traffic flow for that lane;</li>
+<li>(ii) so far as practicable keep clear of a traffic separation line or separation zone;</li>
+<li>(iii) normally join or leave a traffic lane at the termination of the lane, but when joining or leaving from either side shall do so at as small an angle to the general direction of traffic flow as practicable.</li>
+</ul>
+<p>(c) A vessel shall, so far as practicable, avoid crossing traffic lanes but if obliged to do so shall cross on a heading as nearly as practicable at <strong>right angles</strong> to the general direction of traffic flow.</p>
+<p>(d)</p>
+<ul>
+<li>(i) Inshore traffic zones shall not normally be used by through traffic which can safely use the appropriate traffic lane. However, vessels of less than 20m in length, sailing vessels and vessels engaged in fishing may under all circumstances use inshore traffic zones.</li>
+<li>(ii) A vessel may use an inshore traffic zone when en route to or from a port, offshore installation or structure, pilot station or any other place situated within the inshore traffic zone, or to avoid immediate danger.</li>
+</ul>
+<p>(e) A vessel other than a crossing vessel or a vessel joining or leaving a lane shall not normally enter a separation zone or cross a separation line except:</p>
+<ul>
+<li>(i) in cases of emergency to avoid immediate danger;</li>
+<li>(ii) to engage in fishing within the separation zone.</li>
+</ul>
+<p>(f) A vessel navigating in areas near the terminations of traffic separation schemes shall do so with particular caution.</p>
+<p>(g) A vessel shall as far as practicable avoid anchoring in a traffic separation scheme or in areas near its terminations.</p>
+<p>(h) A vessel not using a traffic separation scheme shall avoid it by as wide a margin as practicable.</p>
+<p>(i) A vessel engaged in fishing shall not impede the passage of any vessel following a traffic lane.</p>
+<p>(j) A vessel of less than 20m in length or a sailing vessel shall not impede the safe passage of a power-driven vessel following a traffic lane.</p>
+<p>(k) A vessel restricted in her ability to manoeuvre when engaged in an operation for the maintenance of safety of navigation in a traffic separation scheme is exempted from complying with this rule to the extent necessary to carry out the operation.</p>
+<p>(l) A vessel restricted in her ability to manoeuvre when engaged in an operation for the laying, servicing or picking up of a submarine cable, within a traffic separation scheme, is exempted from complying with this Rule to the extent necessary to carry out the operation.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section II: Conduct of Vessels in Sight of One Another",
+    number: 11, title: "Application",
+    content: `<p>Rules in this section shall apply to vessels in sight of one another.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section II: Conduct of Vessels in Sight of One Another",
+    number: 13, title: "Overtaking",
+    content: `<p>(a) Notwithstanding anything contained in the Rules of Part B, Sections I and II, any vessel overtaking any other shall keep out of the way of the vessel being overtaken.</p>
+<p>(b) A vessel shall be deemed to be overtaking when coming up with another vessel from a direction more than <strong>22.5 degrees abaft her beam</strong>, that is, in such a position with reference to the vessel she is overtaking, that at night she would be able to see only the sternlight of that vessel but neither of her sidelights.</p>
+<p>(c) When a vessel is in any doubt as to whether she is overtaking another, she shall assume that this is the case and act accordingly.</p>
+<p>(d) Any subsequent alteration of bearing between the two vessels shall not make the overtaking vessel a crossing vessel within the meaning of these rules or relieve her of the duty of keeping clear of the overtaken vessel until she is finally past and clear.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section II: Conduct of Vessels in Sight of One Another",
+    number: 14, title: "Head-On Situation",
+    content: `<p>(a) When two power-driven vessels are meeting on reciprocal or nearly reciprocal courses so as to involve risk of collision each shall alter her course to <strong>starboard</strong> so that each shall pass on the <strong>port side</strong> of the other.</p>
+<p>(b) Such a situation shall be deemed to exist when a vessel sees the other ahead or nearly ahead and by night she could see the masthead lights of the other in line or nearly in a line and/or both sidelights and by day she observes the corresponding aspect of the other vessel.</p>
+<p>(c) When a vessel is in any doubt as to whether such a situation exists she shall assume that it does exist and act accordingly.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section II: Conduct of Vessels in Sight of One Another",
+    number: 15, title: "Crossing Situations",
+    content: `<p>When two power-driven vessels are crossing so as to involve risk of collision, the vessel which has the other on her <strong>starboard side</strong> shall keep out of the way and shall, if the circumstances of the case admit, avoid crossing ahead of the other vessel.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section II: Conduct of Vessels in Sight of One Another",
+    number: 16, title: "Action by Give-Way Vessel",
+    content: `<p>Every vessel which is directed to keep out of the way of another vessel shall, as far as possible, take early and substantial action to keep well clear.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section II: Conduct of Vessels in Sight of One Another",
+    number: 17, title: "Action by Stand-On Vessel",
+    content: `<p>(a)</p>
+<ul>
+<li>(i) Where one of two vessels is to keep out of the way, the other shall keep her course and speed.</li>
+<li>(ii) The latter vessel may however take action to avoid collision by her manoeuvre alone, as soon as it becomes apparent to her that the vessel required to keep out of the way is not taking appropriate action in compliance with these Rules.</li>
+</ul>
+<p>(b) When, from any cause, the vessel required to keep her course and speed finds herself so close that collision cannot be avoided by the action of the give-way vessel alone, she shall take such action as will best aid to avoid collision.</p>
+<p>(c) A power-driven vessel which takes action in a crossing situation in accordance with sub-paragraph (a)(ii) of this rule to avoid collision with another power-driven vessel shall, if the circumstances of the case admit, not alter course to port for a vessel on her own port side.</p>
+<p>(d) This rule does not relieve the give-way vessel of her obligation to keep out of the way.</p>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section II: Conduct of Vessels in Sight of One Another",
+    number: 18, title: "Responsibilities Between Vessels",
+    content: `<p>Except where Rules 9, 10, and 13 otherwise require:</p>
+<p><strong>(a) A power-driven vessel underway shall keep out of the way of:</strong></p>
+<ul>
+<li>(i) a vessel not under command;</li>
+<li>(ii) a vessel restricted in her ability to manoeuvre;</li>
+<li>(iii) a vessel engaged in fishing;</li>
+<li>(iv) a sailing vessel.</li>
+</ul>
+<p><strong>(b) A sailing vessel underway shall keep out of the way of:</strong></p>
+<ul>
+<li>(i) a vessel not under command;</li>
+<li>(ii) a vessel restricted in her ability to manoeuvre;</li>
+<li>(iii) a vessel engaged in fishing.</li>
+</ul>
+<p><strong>(c) A vessel engaged in fishing when underway shall, so far as possible, keep out of the way of:</strong></p>
+<ul>
+<li>(i) a vessel not under command;</li>
+<li>(ii) a vessel restricted in her ability to manoeuvre.</li>
+</ul>
+<p>(d)</p>
+<ul>
+<li>(i) Any vessel other than a vessel not under command or a vessel restricted in her ability to manoeuvre shall, if the circumstances of the case admit, avoid impeding the safe passage of a vessel constrained by her draught, exhibiting the signals in Rule 28.</li>
+<li>(ii) A vessel constrained by her draught shall navigate with particular caution having full regard to her special condition.</li>
+</ul>
+<p>(e) A seaplane on the water shall, in general, keep well clear of all vessels and avoid impeding their navigation.</p>
+<p>(f)</p>
+<ul>
+<li>(i) A WIG craft, when taking off, landing and in flight near the surface, shall keep well clear of all other vessels and avoid impeding their navigation.</li>
+<li>(ii) A WIG craft operating on the water surface shall comply with the Rules of this Part as a power-driven vessel.</li>
+</ul>`
+  },
+  {
+    part: "B", partTitle: "Steering and Sailing Rules", section: "Section III: Conduct of Vessels in Restricted Visibility",
+    number: 19, title: "Conduct of Vessels in Restricted Visibility",
+    content: `<p>(a) This rule applies to vessels not in sight of one another when navigating in or near an area of restricted visibility.</p>
+<p>(b) Every vessel shall proceed at a safe speed adapted to the prevailing circumstances and conditions of restricted visibility. A power-driven vessel shall have her engines ready for immediate manoeuvre.</p>
+<p>(c) Every vessel shall have due regard to the prevailing circumstances and conditions of restricted visibility when complying with the Rules of Section I of this Part.</p>
+<p>(d) A vessel which detects by radar alone the presence of another vessel shall determine if a close-quarters situation is developing and/or risk of collision exists. If so, she shall take avoiding action in ample time, provided that when such action consists of an alteration of course, so far as possible the following shall be avoided:</p>
+<ul>
+<li>(i) an alteration of course to port for a vessel forward of the beam, other than for a vessel being overtaken;</li>
+<li>(ii) an alteration of course towards a vessel abeam or abaft the beam.</li>
+</ul>
+<p>(e) Except where it has been determined that a risk of collision does not exist, every vessel which hears apparently forward of her beam the fog signal of another vessel, or which cannot avoid a close-quarters situation with another vessel forward of her beam, shall reduce her speed to the minimum at which she can be kept on her course. She shall if necessary take all way off and in any event navigate with extreme caution until danger of collision is over.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 20, title: "Application",
+    content: `<p>(a) Rules in this Part shall be complied with in all weathers.</p>
+<p>(b) The rules concerning lights shall be complied with from <strong>sunset to sunrise</strong>, and during such times no other lights shall be exhibited, except such lights as cannot be mistaken for the lights specified in these Rules or do not impair their visibility or distinctive character, or interfere with the keeping of a proper look-out.</p>
+<p>(c) The lights prescribed in these Rules shall, if carried, also be exhibited from sunrise to sunset in restricted visibility and may be exhibited in all other circumstances when it is deemed necessary.</p>
+<p>(d) The Rules concerning shapes shall be complied with by day.</p>
+<p>(e) The lights and shapes specified in these Rules shall comply with the provisions of Annex I to these Regulations.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 21, title: "Definitions",
+    content: `<p>(a) <strong>"Masthead light"</strong> means a white light placed over the fore and aft centre line of the vessel showing an unbroken light over an arc of the horizon of <strong>225 degrees</strong> and so fixed as to show the light from right ahead to 22.5 degrees abaft the beam on either side of the vessel.</p>
+<p>(b) <strong>"Sidelights"</strong> means a green light on the starboard side and a red light on the port side each showing an unbroken light over an arc of the horizon of <strong>112.5 degrees</strong> and so fixed as to show the light from right ahead to 22.5 degrees abaft the beam on its respective side. In a vessel of less than 20 metres in length the sidelights may be combined in one lantern carried on the fore and aft centreline of the vessel.</p>
+<p>(c) <strong>"Sternlight"</strong> means a white light placed as nearly as practicable at the stern showing an unbroken light over an arc of the horizon of <strong>135 degrees</strong> and so fixed as to show the light 67.5 degrees from right aft on each side of the vessel.</p>
+<p>(d) <strong>"Towing light"</strong> means a yellow light having the same characteristics as the "sternlight" defined in paragraph (c) of this Rule.</p>
+<p>(e) <strong>"All round light"</strong> means a light showing an unbroken light over an arc of the horizon of <strong>360 degrees</strong>.</p>
+<p>(f) <strong>"Flashing light"</strong> means a light flashing at regular intervals at a frequency of <strong>120 flashes or more per minute</strong>.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 23, title: "Power-Driven Vessels Underway",
+    content: `<p>(a) A power-driven vessel underway shall exhibit:</p>
+<ul>
+<li>(i) a masthead light forward;</li>
+<li>(ii) a second masthead light abaft and higher than the forward one; except that a vessel of less than 50m in length shall not be obliged to exhibit such light but may do so;</li>
+<li>(iii) sidelights;</li>
+<li>(iv) a sternlight.</li>
+</ul>
+<p>(b) An air-cushion vessel operating in the non-displacement mode shall, in addition to the lights prescribed in paragraph (a), exhibit an all-round flashing yellow light.</p>
+<p>(c) A WIG craft only when taking off, landing and in flight near the surface shall, in addition to the lights prescribed in paragraph (a), exhibit a high-intensity all-round flashing red light.</p>
+<p>(d)</p>
+<ul>
+<li>(i) A power-driven vessel of less than 12 metres in length may in lieu of the lights prescribed in paragraph (a) exhibit an all-round white light and sidelights;</li>
+<li>(ii) a power-driven vessel of less than 7 metres in length whose maximum speed does not exceed 7 knots may in lieu of the lights prescribed in paragraph (a) exhibit an all-round white light and shall, if practicable, also exhibit sidelights;</li>
+<li>(iii) the masthead light or all-round white light on a power-driven vessel of less than 12 metres in length may be displaced from the fore and aft centreline of the vessel if centreline fitting is not practicable, provided that the sidelights are combined in one lantern carried on the fore and aft centreline of the vessel.</li>
+</ul>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 24, title: "Towing and Pushing",
+    additional: true,
+    content: `<p>(a) A power-driven vessel when towing shall exhibit:</p>
+<ul>
+<li>(i) instead of the light prescribed in Rule 23(a)(i) or (a)(ii), two masthead lights in a vertical line. When the length of the tow exceeds <strong>200 metres</strong>, three such lights in a vertical line;</li>
+<li>(ii) sidelights;</li>
+<li>(iii) a sternlight;</li>
+<li>(iv) a towing light in a vertical line above the sternlight;</li>
+<li>(v) when the length of the tow exceeds 200 metres, a diamond shape where it can best be seen.</li>
+</ul>
+<p>(b) When a pushing vessel and a vessel being pushed ahead are rigidly connected in a composite unit they shall be regarded as a power-driven vessel and exhibit the lights prescribed in Rule 23.</p>
+<p>(c) A power-driven vessel when pushing ahead or towing alongside, except in the case of a composite unit, shall exhibit:</p>
+<ul>
+<li>(i) instead of the light prescribed in Rule 23(a)(i) or (a)(ii), two masthead lights in a vertical line;</li>
+<li>(ii) sidelights;</li>
+<li>(iii) a sternlight.</li>
+</ul>
+<p>(d) A power-driven vessel to which paragraphs (a) or (c) apply shall also comply with Rule 23(a)(ii).</p>
+<p>(e) A vessel or object being towed shall exhibit:</p>
+<ul>
+<li>(i) sidelights;</li>
+<li>(ii) a sternlight;</li>
+<li>(iii) when the length of the tow exceeds 200 metres, a diamond shape where it can best be seen.</li>
+</ul>
+<p>(f) Provided that any number of vessels being towed alongside or pushed in a group shall be lighted as one vessel:</p>
+<ul>
+<li>(i) a vessel being pushed ahead, not being part of a composite unit, shall exhibit at the forward end, sidelights;</li>
+<li>(ii) a vessel being towed alongside shall exhibit a sternlight and at the forward end, sidelights.</li>
+</ul>
+<p>(g) An inconspicuous, partly submerged vessel or object being towed shall exhibit:</p>
+<ul>
+<li>(i) if less than 25 metres in breadth, one all-round white light at or near the forward end and one at or near the after end;</li>
+<li>(ii) if 25 metres or more in breadth, two additional all-round white lights at or near the extremities of its breadth;</li>
+<li>(iii) if it exceeds 100 metres in length, additional all-round white lights so that the distance between the lights shall not exceed 100 metres;</li>
+<li>(iv) a diamond shape at or near the aftermost extremity of the last vessel or object being towed.</li>
+</ul>
+<p>(h) Where from any sufficient cause it is impracticable for a vessel being towed to exhibit the prescribed lights or shapes, all possible measures shall be taken to light the vessel or object towed or at least to indicate its presence.</p>
+<p>(i) Where from any sufficient cause it is impracticable for a vessel not normally engaged in towing to display the lights prescribed in paragraph (a) or (c), such vessel shall not be required to exhibit those lights when engaged in towing another vessel in distress or otherwise in need of assistance.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 25, title: "Sailing Vessels Underway and Vessels Under Oars",
+    content: `<p>(a) A sailing vessel underway shall exhibit:</p>
+<ul>
+<li>(i) sidelights;</li>
+<li>(ii) a sternlight.</li>
+</ul>
+<p>(b) In a sailing vessel of less than 20 metres in length the lights prescribed in paragraph (a) may be combined in one lantern at or near the top of the mast where it can best be seen.</p>
+<p>(c) A sailing vessel underway may, in addition to the lights prescribed in paragraph (a), exhibit at or near the top of the mast two all-round lights in a vertical line, the upper being <strong>red</strong> and the lower <strong>green</strong>, but these lights shall not be exhibited in conjunction with the combined lantern permitted by paragraph (b).</p>
+<p>(d)</p>
+<ul>
+<li>(i) A sailing vessel of less than 7 metres in length shall, if practicable, exhibit the lights prescribed in paragraph (a) or (b), but if she does not, she shall have ready to hand an electric torch or lighted lantern showing a white light which shall be exhibited in sufficient time to prevent a collision.</li>
+<li>(ii) A vessel under oars may exhibit the lights prescribed in this Rule for sailing vessels, but if she does not, she shall have ready to hand an electric torch or lighted lantern showing a white light.</li>
+</ul>
+<p>(e) A vessel proceeding under sail when also being propelled by machinery shall exhibit forward where it can best be seen a <strong>conical shape, apex downwards</strong>.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 26, title: "Fishing Vessels",
+    content: `<p>(a) A vessel engaged in fishing, whether underway or at anchor, shall exhibit only the lights and shapes prescribed in this Rule.</p>
+<p><strong>(b) A vessel when engaged in trawling shall exhibit:</strong></p>
+<ul>
+<li>(i) two all-round lights in a vertical line, the upper being <strong>green</strong> and the lower <strong>white</strong>, or a shape consisting of two cones with their apexes together in a vertical line;</li>
+<li>(ii) a masthead light abaft of and higher than the all-round green light; a vessel of less than 50 metres shall not be obliged to exhibit such a light but may do so;</li>
+<li>(iii) when making way through the water, in addition, sidelights and a sternlight.</li>
+</ul>
+<p><strong>(c) A vessel engaged in fishing, other than trawling, shall exhibit:</strong></p>
+<ul>
+<li>(i) two all-round lights in a vertical line, the upper being <strong>red</strong> and the lower <strong>white</strong>, or a shape consisting of two cones with apexes together;</li>
+<li>(ii) when there is outlying gear extending more than 150 metres horizontally from the vessel, an all-round white light or a cone apex upwards in the direction of the gear;</li>
+<li>(iii) when making way through the water, in addition, sidelights and a sternlight.</li>
+</ul>
+<p>(d) A vessel engaged in fishing in close proximity to other vessels engaged in fishing may exhibit the additional signals described in Annex II.</p>
+<p>(e) A vessel when not engaged in fishing shall not exhibit the lights or shapes prescribed in this Rule, but only those prescribed for a vessel of her length.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 27, title: "Vessels Not Under Command or Restricted in Their Ability to Manoeuvre",
+    content: `<p><strong>(a) A vessel not under command shall exhibit:</strong></p>
+<ul>
+<li>(i) two all-round <strong>red</strong> lights in a vertical line where they can best be seen;</li>
+<li>(ii) two balls or similar shapes in a vertical line where they can best be seen;</li>
+<li>(iii) when making way through the water, in addition, sidelights and a sternlight.</li>
+</ul>
+<p><strong>(b) A vessel restricted in her ability to manoeuvre shall exhibit:</strong></p>
+<ul>
+<li>(i) three all-round lights in a vertical line where they can best be seen. The highest and lowest shall be <strong>red</strong> and the middle light shall be <strong>white</strong>;</li>
+<li>(ii) three shapes in a vertical line. The highest and lowest shall be balls and the middle one a diamond;</li>
+<li>(iii) when making way through the water, a masthead light or lights, sidelights and a sternlight, in addition;</li>
+<li>(iv) when at anchor, in addition, the light, lights or shape prescribed in Rule 30.</li>
+</ul>
+<p>(c) A power-driven vessel engaged in a towing operation such as severely restricts the towing vessel and her tow in their ability to deviate from their course shall, in addition to the lights and shapes prescribed in Rule 24(a), exhibit the lights or shapes prescribed in sub-paragraphs (b)(i) and (ii).</p>
+<p><strong>(d) A vessel engaged in dredging or underwater operations, when restricted in her ability to manoeuvre, shall exhibit:</strong></p>
+<ul>
+<li>(i) two all-round <strong>red</strong> lights or two balls in a vertical line to indicate the side on which the obstruction exists;</li>
+<li>(ii) two all-round <strong>green</strong> lights or two diamonds in a vertical line to indicate the side on which a vessel may pass;</li>
+<li>(iii) when at anchor the lights or shapes prescribed in this paragraph instead of the lights or shape prescribed in Rule 30.</li>
+</ul>
+<p>(e) Whenever the size of a vessel engaged in diving operations makes it impracticable to exhibit all lights and shapes prescribed in paragraph (d), the following shall be exhibited:</p>
+<ul>
+<li>(i) three all-round lights in a vertical line: highest and lowest red, middle white;</li>
+<li>(ii) a rigid replica of the International Code Flag "A" not less than 1 metre in height.</li>
+</ul>
+<p>(f) A vessel engaged in mineclearance operations shall exhibit three all-round green lights or three balls, indicating it is dangerous for another vessel to approach within <strong>1000 metres</strong>.</p>
+<p>(g) Vessels of less than 12 metres in length, except those engaged in diving operations, shall not be required to exhibit the lights and shapes prescribed in this Rule.</p>
+<p>(h) The signals prescribed in this Rule are not signals of vessels in distress and requiring assistance.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 28, title: "Vessels Constrained by Their Draught",
+    content: `<p>A vessel constrained by her draught may, in addition to the lights prescribed for power-driven vessels in Rule 23, exhibit where they can best be seen <strong>three all-round red lights in a vertical line</strong>, or a <strong>cylinder</strong>.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 29, title: "Pilot Vessels",
+    additional: true,
+    content: `<p>(a) A vessel engaged on pilotage duty shall exhibit:</p>
+<ul>
+<li>(i) at or near the masthead, two all-round lights in a vertical line, the upper being <strong>white</strong> and the lower <strong>red</strong>;</li>
+<li>(ii) when underway, in addition, sidelights and a sternlight;</li>
+<li>(iii) when at anchor, in addition, the light, lights or shape prescribed in Rule 30 for vessels at anchor.</li>
+</ul>
+<p>(b) A pilot vessel when not engaged on pilotage duty shall exhibit the lights or shapes prescribed for a similar vessel of her length.</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 30, title: "Anchored Vessels and Vessels Aground",
+    content: `<p><strong>(a) A vessel at anchor shall exhibit where it can best be seen:</strong></p>
+<ul>
+<li>(i) in the fore part, an all-round white light or one ball;</li>
+<li>(ii) at or near the stern and at a lower level than the light prescribed in paragraph (i), an all-round white light.</li>
+</ul>
+<p>(b) A vessel of less than 50 metres in length may exhibit an all-round white light where it can best be seen instead of the lights prescribed in paragraph (a).</p>
+<p>(c) A vessel at anchor may, and a vessel of 100 metres and more in length shall, also use the available working or equivalent lights to illuminate her decks.</p>
+<p><strong>(d) A vessel aground shall exhibit the lights prescribed in paragraph (a) or (b) and in addition:</strong></p>
+<ul>
+<li>(i) two all-round <strong>red</strong> lights in a vertical line;</li>
+<li>(ii) three balls in a vertical line.</li>
+</ul>
+<p>(e) A vessel of less than 7 metres in length, when at anchor, not in or near a narrow channel, fairway or anchorage, or where other vessels normally navigate, shall not be required to exhibit the lights or shape prescribed in paragraphs (a) and (b).</p>
+<p>(f) A vessel of less than 12 metres in length, when aground, shall not be required to exhibit the lights or shapes prescribed in sub-paragraphs (d)(i) and (ii).</p>`
+  },
+  {
+    part: "C", partTitle: "Lights and Shapes", section: null,
+    number: 31, title: "Seaplanes and WIG Craft",
+    additional: true,
+    content: `<p>Where it is impractical for a seaplane or a WIG craft to exhibit lights and shapes of the characteristics or in the positions prescribed in the Rules of this Part, she shall exhibit lights and shapes as closely similar in characteristics and position as is possible.</p>`
+  },
+  {
+    part: "D", partTitle: "Sound and Light Signals", section: null,
+    number: 34, title: "Manoeuvring and Warning Signals",
+    content: `<p>(a) When vessels are in sight of one another, a power-driven vessel underway, when manoeuvring as authorised by these Rules, shall indicate that manoeuvre by the following signals on her whistle:</p>
+<ul>
+<li><strong>One short blast</strong> — "I am altering my course to starboard";</li>
+<li><strong>Two short blasts</strong> — "I am altering my course to port";</li>
+<li><strong>Three short blasts</strong> — "I am operating astern propulsion".</li>
+</ul>
+<p>(b) Any vessel may supplement the whistle signals with light signals:</p>
+<ul>
+<li>(i) one flash = altering course to starboard; two flashes = altering course to port; three flashes = operating astern propulsion;</li>
+<li>(ii) the duration of each flash shall be about one second, the interval between flashes about one second, and the interval between successive signals not less than ten seconds;</li>
+<li>(iii) the light used shall, if fitted, be an all-round white light, visible at a minimum range of 5 miles.</li>
+</ul>
+<p>(c) When in sight of one another in a narrow channel or fairway:</p>
+<ul>
+<li>(i) a vessel intending to overtake another shall indicate: <strong>two prolonged blasts followed by one short blast</strong> = "I intend to overtake you on your starboard side"; <strong>two prolonged blasts followed by two short blasts</strong> = "I intend to overtake you on your port side";</li>
+<li>(ii) the vessel about to be overtaken when acting in agreement shall sound: <strong>one prolonged, one short, one prolonged and one short blast</strong>, in that order.</li>
+</ul>
+<p>(d) When vessels in sight of one another are approaching each other and either vessel fails to understand the intentions or actions of the other, or is in doubt whether sufficient action is being taken to avoid collision, the vessel in doubt shall immediately give <strong>at least five short and rapid blasts</strong> on the whistle. Such signals may be supplemented by a light signal of at least five short and rapid flashes.</p>
+<p>(e) A vessel nearing a bend or an area of the channel or fairway where other vessels may be obscured shall sound <strong>one prolonged blast</strong>. Such signal shall be answered with a prolonged blast by any approaching vessel within hearing around the bend.</p>
+<p>(f) If whistles are fitted on a vessel at a distance apart of more than 100 metres, one whistle only shall be used for giving manoeuvring and warning signals.</p>`
+  },
+  {
+    part: "D", partTitle: "Sound and Light Signals", section: null,
+    number: 35, title: "Sound Signals in Restricted Visibility",
+    content: `<p>In or near an area of restricted visibility, whether by day or night, the signals prescribed in this Rule shall be used as follows:</p>
+<p>(a) A <strong>power-driven vessel making way</strong> through the water shall sound at intervals of not more than 2 minutes <strong>one prolonged blast</strong>.</p>
+<p>(b) A <strong>power-driven vessel underway but stopped</strong> and making no way through the water shall sound at intervals of not more than 2 minutes <strong>two prolonged blasts</strong> in succession with an interval of about 2 seconds between them.</p>
+<p>(c) A vessel not under command, a vessel restricted in her ability to manoeuvre, a vessel constrained by her draught, a sailing vessel, a vessel engaged in fishing and a vessel engaged in towing or pushing another vessel shall, instead of the signals prescribed in paragraphs (a) or (b), sound at intervals of not more than 2 minutes <strong>three blasts in succession: one prolonged followed by two short blasts</strong>.</p>
+<p>(d) A vessel engaged in fishing, when at anchor, and a vessel restricted in her ability to manoeuvre when carrying out her work at anchor, shall instead of the signals prescribed in paragraph (g), sound the signal prescribed in paragraph (c).</p>
+<p>(e) A vessel towed or if more than one vessel is towed the last vessel of the tow, if manned, shall at intervals of not more than 2 minutes sound <strong>four blasts in succession: one prolonged followed by three short blasts</strong>. When practicable, this signal shall be made immediately after the signal made by the towing vessel.</p>
+<p>(f) When a pushing vessel and a vessel being pushed ahead are rigidly connected in a composite unit they shall be regarded as a power-driven vessel and shall give the signals prescribed in paragraphs (a) or (b).</p>
+<p>(g) A <strong>vessel at anchor</strong> shall at intervals of not more than one minute ring the bell rapidly for about 5 seconds. In a vessel of 100 metres or more in length the bell shall be sounded in the forepart and immediately after the ringing of the bell the gong shall be sounded rapidly for about 5 seconds in the after part. A vessel at anchor may in addition sound three blasts: one short, one prolonged and one short blast, to give warning of her position.</p>
+<p>(h) A <strong>vessel aground</strong> shall give the bell signal and if required the gong signal prescribed in paragraph (g) and shall, in addition, give three separate and distinct strokes on the bell immediately before and after the rapid ringing of the bell.</p>
+<p>(i) A vessel of 12 metres or more but less than 20 metres in length shall not be obliged to give the bell signals prescribed in paragraphs (g) and (h). However, if she does not, she shall make some other efficient sound signal at intervals of not more than 2 minutes.</p>
+<p>(j) A vessel of less than 12 metres in length shall not be obliged to give the above-mentioned signals but, if she does not, shall make some other efficient sound signal at intervals of not more than 2 minutes.</p>
+<p>(k) A pilot vessel when engaged on pilotage duty may in addition to the signals prescribed in paragraphs (a), (b) or (g) sound an identity signal consisting of <strong>four short blasts</strong>.</p>`
+  }
+];
+
+// ==================== QUIZ QUESTIONS ====================
+const allQuestions = [
+  // Rule identification
+  { category: "Rule Identification", q: "Which rule covers 'Lookout'?", a: "Rule 5", wrong: ["Rule 6", "Rule 7", "Rule 8"] },
+  { category: "Rule Identification", q: "Which rule covers 'Safe Speed'?", a: "Rule 6", wrong: ["Rule 5", "Rule 7", "Rule 8"] },
+  { category: "Rule Identification", q: "Which rule covers 'Risk of Collision'?", a: "Rule 7", wrong: ["Rule 6", "Rule 8", "Rule 9"] },
+  { category: "Rule Identification", q: "Which rule covers 'Action to Avoid a Collision'?", a: "Rule 8", wrong: ["Rule 7", "Rule 9", "Rule 10"] },
+  { category: "Rule Identification", q: "Which rule covers 'Narrow Channels'?", a: "Rule 9", wrong: ["Rule 8", "Rule 10", "Rule 11"] },
+  { category: "Rule Identification", q: "Which rule covers 'Traffic Separation Schemes'?", a: "Rule 10", wrong: ["Rule 9", "Rule 11", "Rule 13"] },
+  { category: "Rule Identification", q: "Which rule covers 'Overtaking'?", a: "Rule 13", wrong: ["Rule 14", "Rule 15", "Rule 16"] },
+  { category: "Rule Identification", q: "Which rule covers 'Head-On Situation'?", a: "Rule 14", wrong: ["Rule 13", "Rule 15", "Rule 16"] },
+  { category: "Rule Identification", q: "Which rule covers 'Crossing Situations'?", a: "Rule 15", wrong: ["Rule 14", "Rule 16", "Rule 17"] },
+  { category: "Rule Identification", q: "Which rule covers 'Responsibilities Between Vessels'?", a: "Rule 18", wrong: ["Rule 17", "Rule 19", "Rule 15"] },
+  { category: "Rule Identification", q: "Which rule covers 'Manoeuvring and Warning Signals'?", a: "Rule 34", wrong: ["Rule 35", "Rule 30", "Rule 19"] },
+  { category: "Rule Identification", q: "Which rule covers 'Sound Signals in Restricted Visibility'?", a: "Rule 35", wrong: ["Rule 34", "Rule 19", "Rule 30"] },
+
+  // Light definitions and angles
+  { category: "Lights & Shapes", q: "What is the arc of visibility of a masthead light?", a: "225 degrees", wrong: ["112.5 degrees", "135 degrees", "360 degrees"] },
+  { category: "Lights & Shapes", q: "What is the arc of visibility of each sidelight?", a: "112.5 degrees", wrong: ["225 degrees", "135 degrees", "67.5 degrees"] },
+  { category: "Lights & Shapes", q: "What is the arc of visibility of a sternlight?", a: "135 degrees", wrong: ["225 degrees", "112.5 degrees", "67.5 degrees"] },
+  { category: "Lights & Shapes", q: "What is the arc of visibility of an all-round light?", a: "360 degrees", wrong: ["225 degrees", "135 degrees", "270 degrees"] },
+  { category: "Lights & Shapes", q: "What colour is the sidelight on the starboard side?", a: "Green", wrong: ["Red", "White", "Yellow"] },
+  { category: "Lights & Shapes", q: "What colour is the sidelight on the port side?", a: "Red", wrong: ["Green", "White", "Yellow"] },
+  { category: "Lights & Shapes", q: "What colour is a towing light?", a: "Yellow", wrong: ["White", "Red", "Green"] },
+  { category: "Lights & Shapes", q: "A flashing light flashes at a frequency of at least how many flashes per minute?", a: "120 flashes per minute", wrong: ["60 flashes per minute", "90 flashes per minute", "180 flashes per minute"] },
+  { category: "Lights & Shapes", q: "What colour is a masthead light?", a: "White", wrong: ["Red", "Green", "Yellow"] },
+
+  // Vessel lights
+  { category: "Lights & Shapes", q: "A vessel not under command displays which lights in a vertical line?", a: "Two all-round red lights", wrong: ["Two all-round white lights", "Three all-round red lights", "Red, white, red lights"] },
+  { category: "Lights & Shapes", q: "A vessel restricted in her ability to manoeuvre displays three all-round lights in a vertical line. What are they?", a: "Red, white, red (top to bottom)", wrong: ["Red, red, white", "White, red, white", "Green, white, green"] },
+  { category: "Lights & Shapes", q: "What lights does a vessel constrained by her draught display in addition to normal power-driven vessel lights?", a: "Three all-round red lights in a vertical line", wrong: ["Two all-round red lights", "Three all-round white lights", "Two all-round green lights"] },
+  { category: "Lights & Shapes", q: "What day shape does a vessel constrained by her draught display?", a: "A cylinder", wrong: ["A ball", "A diamond", "A cone apex downwards"] },
+  { category: "Lights & Shapes", q: "A pilot vessel on duty displays two all-round lights at the masthead. What colours?", a: "White over red", wrong: ["Red over white", "Red over green", "Green over white"] },
+  { category: "Lights & Shapes", q: "What lights does a vessel at anchor display?", a: "An all-round white light in the fore part and an all-round white light at or near the stern at a lower level", wrong: ["Two all-round red lights", "A masthead light and sternlight", "Sidelights and a sternlight"] },
+  { category: "Lights & Shapes", q: "What additional lights does a vessel aground display (in addition to anchor lights)?", a: "Two all-round red lights in a vertical line", wrong: ["Two all-round green lights", "Three all-round white lights", "A flashing yellow light"] },
+  { category: "Lights & Shapes", q: "A vessel aground displays what day shapes?", a: "Three balls in a vertical line", wrong: ["Two balls in a vertical line", "A diamond", "A cylinder"] },
+  { category: "Lights & Shapes", q: "A vessel engaged in trawling displays two all-round lights in a vertical line. What are the colours?", a: "Green over white", wrong: ["Red over white", "White over green", "Red over green"] },
+  { category: "Lights & Shapes", q: "A vessel engaged in fishing (other than trawling) displays two all-round lights. What are the colours?", a: "Red over white", wrong: ["Green over white", "White over red", "Red over green"] },
+  { category: "Lights & Shapes", q: "What is the day shape for a vessel proceeding under sail when also being propelled by machinery?", a: "A conical shape, apex downwards", wrong: ["A ball", "A diamond", "A cylinder"] },
+  { category: "Lights & Shapes", q: "When is a second masthead light NOT required on a power-driven vessel?", a: "When the vessel is less than 50 metres in length", wrong: ["When the vessel is less than 20 metres", "When the vessel is less than 100 metres", "When in restricted visibility"] },
+  { category: "Lights & Shapes", q: "An air-cushion vessel in non-displacement mode shows what additional light?", a: "An all-round flashing yellow light", wrong: ["An all-round flashing red light", "An all-round flashing white light", "Two all-round green lights"] },
+
+  // Sound signals
+  { category: "Sound Signals", q: "One short blast on the whistle means what?", a: "I am altering my course to starboard", wrong: ["I am altering my course to port", "I am operating astern propulsion", "I am in doubt about your intentions"] },
+  { category: "Sound Signals", q: "Two short blasts on the whistle means what?", a: "I am altering my course to port", wrong: ["I am altering my course to starboard", "I am operating astern propulsion", "I intend to overtake you"] },
+  { category: "Sound Signals", q: "Three short blasts on the whistle means what?", a: "I am operating astern propulsion", wrong: ["I am altering my course to starboard", "I am altering my course to port", "I am in distress"] },
+  { category: "Sound Signals", q: "At least five short and rapid blasts on the whistle means what?", a: "Doubt about the other vessel's intentions or actions", wrong: ["I am operating astern propulsion", "I intend to overtake", "I am altering course to starboard"] },
+  { category: "Sound Signals", q: "What signal indicates 'I intend to overtake you on your starboard side' in a narrow channel?", a: "Two prolonged blasts followed by one short blast", wrong: ["Two prolonged blasts followed by two short blasts", "One prolonged blast followed by one short blast", "One prolonged blast"] },
+  { category: "Sound Signals", q: "What signal indicates 'I intend to overtake you on your port side' in a narrow channel?", a: "Two prolonged blasts followed by two short blasts", wrong: ["Two prolonged blasts followed by one short blast", "One prolonged blast followed by two short blasts", "Two short blasts"] },
+  { category: "Sound Signals", q: "A vessel nearing a bend in a narrow channel sounds what signal?", a: "One prolonged blast", wrong: ["Two short blasts", "Five short and rapid blasts", "One short blast"] },
+
+  // Restricted visibility sound signals
+  { category: "Sound Signals", q: "In restricted visibility, a power-driven vessel making way sounds what signal?", a: "One prolonged blast at intervals of not more than 2 minutes", wrong: ["Two prolonged blasts every 2 minutes", "One short blast every minute", "Three blasts: one prolonged, two short"] },
+  { category: "Sound Signals", q: "In restricted visibility, a power-driven vessel stopped (not making way) sounds what signal?", a: "Two prolonged blasts in succession at intervals of not more than 2 minutes", wrong: ["One prolonged blast every 2 minutes", "Three short blasts every 2 minutes", "Rapid ringing of a bell"] },
+  { category: "Sound Signals", q: "In restricted visibility, a sailing vessel sounds what signal?", a: "One prolonged followed by two short blasts at intervals of not more than 2 minutes", wrong: ["One prolonged blast every 2 minutes", "Two prolonged blasts every 2 minutes", "Rapid bell ringing every minute"] },
+  { category: "Sound Signals", q: "In restricted visibility, a vessel at anchor sounds what signal?", a: "Rapid ringing of the bell for about 5 seconds at intervals of not more than 1 minute", wrong: ["One prolonged blast every 2 minutes", "Two prolonged blasts every 2 minutes", "Three short blasts every minute"] },
+  { category: "Sound Signals", q: "A vessel being towed in restricted visibility sounds what signal?", a: "One prolonged followed by three short blasts", wrong: ["One prolonged followed by two short blasts", "Two prolonged blasts", "Rapid ringing of the bell"] },
+  { category: "Sound Signals", q: "A pilot vessel on duty may sound an identity signal of what?", a: "Four short blasts", wrong: ["Three short blasts", "Five short blasts", "Two prolonged blasts"] },
+  { category: "Sound Signals", q: "In restricted visibility, a vessel aground gives what additional signal before and after the bell?", a: "Three separate and distinct strokes on the bell", wrong: ["Five rapid strokes on the bell", "One prolonged blast on the whistle", "Two short blasts on the whistle"] },
+
+  // Steering and sailing rules
+  { category: "Steering & Sailing", q: "In a head-on situation between two power-driven vessels, each vessel should alter course to which side?", a: "Starboard", wrong: ["Port", "Either side", "The vessel on the right alters course"] },
+  { category: "Steering & Sailing", q: "In a crossing situation, which vessel is the give-way vessel?", a: "The vessel which has the other on her starboard side", wrong: ["The vessel which has the other on her port side", "The larger vessel", "The slower vessel"] },
+  { category: "Steering & Sailing", q: "A vessel is deemed to be overtaking when coming up from a direction more than how many degrees abaft the beam?", a: "22.5 degrees", wrong: ["45 degrees", "67.5 degrees", "10 degrees"] },
+  { category: "Steering & Sailing", q: "In a narrow channel, a vessel should keep to which side?", a: "Starboard side", wrong: ["Port side", "The centre", "Whichever side is deeper"] },
+  { category: "Steering & Sailing", q: "What should a stand-on vessel do initially?", a: "Keep her course and speed", wrong: ["Alter course to starboard", "Slow down immediately", "Sound five short blasts"] },
+  { category: "Steering & Sailing", q: "When crossing traffic lanes in a traffic separation scheme, a vessel should cross at what angle?", a: "As nearly as practicable at right angles to the direction of traffic flow", wrong: ["At 45 degrees to traffic flow", "Parallel to traffic flow", "At the smallest angle possible"] },
+  { category: "Steering & Sailing", q: "If there is doubt about whether a vessel is overtaking, what should she assume?", a: "That she IS overtaking and act accordingly", wrong: ["That she is crossing", "That she has right of way", "That the other vessel will give way"] },
+  { category: "Steering & Sailing", q: "Rule 8 states that alterations of course and/or speed to avoid collision should be:", a: "Large enough to be readily apparent to another vessel", wrong: ["As small as possible", "Made only as a last resort", "Communicated by radio first"] },
+  { category: "Steering & Sailing", q: "Under Rule 2 (Responsibility), a departure from the rules may be necessary to:", a: "Avoid immediate danger", wrong: ["Save time in heavy traffic", "Comply with company policy", "Allow faster vessels to pass"] },
+  { category: "Steering & Sailing", q: "In restricted visibility, a vessel detecting another by radar should avoid altering course to port for a vessel where?", a: "Forward of the beam (other than one being overtaken)", wrong: ["Abaft the beam", "Abeam", "On the starboard quarter"] },
+
+  // Responsibilities between vessels
+  { category: "Responsibilities", q: "According to Rule 18, a power-driven vessel shall keep out of the way of all EXCEPT which type?", a: "Another power-driven vessel (not listed)", wrong: ["A vessel not under command", "A sailing vessel", "A vessel engaged in fishing"] },
+  { category: "Responsibilities", q: "Which vessel type has the highest priority (least obligation to give way) under Rule 18?", a: "A vessel not under command", wrong: ["A sailing vessel", "A vessel engaged in fishing", "A power-driven vessel"] },
+  { category: "Responsibilities", q: "Under Rule 18, a sailing vessel must keep out of the way of which vessel types?", a: "Vessels not under command, restricted in ability to manoeuvre, and engaged in fishing", wrong: ["Only vessels not under command", "Power-driven vessels", "All other vessel types"] },
+  { category: "Responsibilities", q: "Under Rule 18, which vessels shall keep out of the way of a vessel not under command?", a: "All other vessels (power-driven, sailing, and fishing)", wrong: ["Only power-driven vessels", "Only sailing vessels", "No vessels need to give way"] },
+  { category: "Responsibilities", q: "A vessel of less than 20 metres or a sailing vessel shall not impede which vessel in a narrow channel?", a: "A vessel which can safely navigate only within the narrow channel", wrong: ["Any other vessel", "Only power-driven vessels", "Only vessels over 100 metres"] },
+  { category: "Responsibilities", q: "In a traffic separation scheme, a vessel of less than 20 metres shall not impede:", a: "A power-driven vessel following a traffic lane", wrong: ["A sailing vessel", "A vessel engaged in fishing", "A vessel at anchor"] },
+
+  // Specific values and details
+  { category: "Specific Details", q: "When does a towing vessel show three masthead lights instead of two?", a: "When the length of the tow exceeds 200 metres", wrong: ["When the tow exceeds 100 metres", "When the tow exceeds 50 metres", "When towing at night"] },
+  { category: "Specific Details", q: "It is dangerous for another vessel to approach within what distance of a mineclearance vessel?", a: "1000 metres", wrong: ["500 metres", "200 metres", "2000 metres"] },
+  { category: "Specific Details", q: "When should navigation lights be displayed?", a: "From sunset to sunrise", wrong: ["Only at night in open water", "At all times", "When visibility is less than 2 miles"] },
+  { category: "Specific Details", q: "A vessel at anchor of 100 metres or more in length shall also sound what in the after part?", a: "A gong rapidly for about 5 seconds", wrong: ["A bell rapidly for 5 seconds", "A whistle blast", "Nothing additional is required"] },
+  { category: "Specific Details", q: "Which vessels may always use inshore traffic zones?", a: "Vessels of less than 20m, sailing vessels, and vessels engaged in fishing", wrong: ["Only vessels less than 12m", "All vessels under 50m", "Only fishing vessels"] },
+  { category: "Specific Details", q: "The sternlight shows light how many degrees from right aft on each side?", a: "67.5 degrees", wrong: ["22.5 degrees", "45 degrees", "112.5 degrees"] },
+  { category: "Specific Details", q: "In restricted visibility, sound signals for most vessel types are given at intervals of not more than:", a: "2 minutes", wrong: ["1 minute", "3 minutes", "5 minutes"] },
+  { category: "Specific Details", q: "A vessel at anchor rings the bell at intervals of not more than:", a: "1 minute", wrong: ["2 minutes", "30 seconds", "5 minutes"] },
+  { category: "Specific Details", q: "How long is each flash in a light signal supplementing whistle signals (Rule 34)?", a: "About one second", wrong: ["About two seconds", "About half a second", "About three seconds"] },
+  { category: "Specific Details", q: "A diving vessel shall display a rigid replica of which flag, not less than 1 metre in height?", a: "International Code Flag 'A'", wrong: ["International Code Flag 'B'", "International Code Flag 'D'", "International Code Flag 'O'"] },
+  { category: "Specific Details", q: "Fishing gear extending more than what distance requires an additional light/shape?", a: "150 metres horizontally from the vessel", wrong: ["100 metres", "200 metres", "50 metres"] },
+  { category: "Specific Details", q: "A power-driven vessel of less than what length may show an all-round white light instead of masthead light, sternlight?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
+  { category: "Specific Details", q: "Vessels of less than what length are exempt from displaying lights and shapes for vessels not under command (except diving)?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
+  { category: "Specific Details", q: "A vessel aground of less than what length need not show the aground lights/shapes?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
+  { category: "Specific Details", q: "Rule 5 (Lookout) requires a lookout by which means?", a: "Sight and hearing as well as all available means", wrong: ["Sight only", "Radar only", "Sight and radar only"] },
+  { category: "Specific Details", q: "Risk of collision shall be deemed to exist if the compass bearing of an approaching vessel does what?", a: "Does not appreciably change", wrong: ["Changes rapidly", "Changes by more than 5 degrees", "Remains steady at 90 degrees"] },
+];
+
+// ==================== APP STATE ====================
+let currentView = 'rules';
+let currentRule = null;
+let quizState = { questions: [], current: 0, score: 0, answered: false };
+
+// ==================== SIDEBAR ====================
+function buildSidebar() {
+  const nav = document.getElementById('ruleNav');
+  let html = '';
+  let currentPart = '';
+  let currentSection = '';
+
+  rules.forEach((rule, idx) => {
+    if (rule.part !== currentPart) {
+      currentPart = rule.part;
+      currentSection = '';
+      html += `<div class="px-4 pt-4 pb-1"><h3 class="text-xs font-bold text-navy-400 uppercase tracking-wider">Part ${rule.part} — ${rule.partTitle}</h3></div>`;
+    }
+    if (rule.section && rule.section !== currentSection) {
+      currentSection = rule.section;
+      html += `<div class="px-4 pt-3 pb-1"><p class="text-xs font-medium text-sea-700">${rule.section}</p></div>`;
+    }
+    const additional = rule.additional ? ' <span class="text-xs text-navy-300">(Add.)</span>' : '';
+    html += `<button data-idx="${idx}" onclick="selectRule(${idx})" class="sidebar-item w-full text-left px-4 py-2.5 border-l-3 border-transparent text-sm hover:pl-5 transition-all">
+      <span class="font-semibold text-navy-700">Rule ${rule.number}</span>${additional}<br>
+      <span class="text-navy-500 text-xs">${rule.title}</span>
+    </button>`;
+  });
+
+  nav.innerHTML = html;
+}
+
+function selectRule(idx) {
+  currentRule = idx;
+  const rule = rules[idx];
+
+  // Update sidebar active state
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const activeBtn = document.querySelector(`.sidebar-item[data-idx="${idx}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Render content
+  const additional = rule.additional ? '<span class="inline-block bg-sea-100 text-sea-700 text-xs font-medium px-2 py-0.5 rounded-full ml-2">Additional Rule</span>' : '';
+  document.getElementById('ruleContent').innerHTML = `
+    <div class="fade-in">
+      <div class="mb-6">
+        <p class="text-xs font-semibold text-sea-600 uppercase tracking-wider mb-1">Part ${rule.part} — ${rule.partTitle}${rule.section ? ' / ' + rule.section : ''}</p>
+        <h2 class="text-2xl md:text-3xl font-bold text-navy-900">Rule ${rule.number} — ${rule.title}${additional}</h2>
+      </div>
+      <div class="rule-content bg-white rounded-xl shadow-sm border border-navy-100 p-6 md:p-8 text-navy-800 leading-relaxed">
+        ${rule.content}
+      </div>
+    </div>`;
+
+  // Close mobile sidebar
+  if (window.innerWidth < 768) toggleSidebar(false);
+}
+
+function filterRules(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.sidebar-item').forEach(btn => {
+    const text = btn.textContent.toLowerCase();
+    btn.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+function toggleSidebar(forceState) {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const isOpen = sidebar.classList.contains('open');
+  const newState = forceState !== undefined ? forceState : !isOpen;
+
+  if (newState) {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+  } else {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+}
+
+// ==================== VIEW SWITCHING ====================
+function showView(view) {
+  currentView = view;
+  document.getElementById('rulesView').classList.toggle('hidden', view !== 'rules');
+  document.getElementById('sidebar').classList.toggle('md:block', view === 'rules');
+  document.getElementById('quizView').classList.toggle('hidden', view !== 'quiz');
+
+  // Hide sidebar in quiz mode on desktop
+  if (view === 'quiz') {
+    document.getElementById('sidebar').style.display = 'none';
+  } else {
+    document.getElementById('sidebar').style.display = '';
+  }
+
+  // Update tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('bg-sea-700', 'text-white');
+    btn.classList.add('text-navy-300', 'hover:text-white', 'hover:bg-navy-800');
+  });
+  const activeTab = document.getElementById(view === 'rules' ? 'tabRules' : 'tabQuiz');
+  activeTab.classList.add('bg-sea-700', 'text-white');
+  activeTab.classList.remove('text-navy-300', 'hover:text-white', 'hover:bg-navy-800');
+}
+
+// ==================== QUIZ ====================
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  const selected = shuffle(allQuestions).slice(0, 20);
+  quizState = { questions: selected, current: 0, score: 0, answered: false };
+  document.getElementById('quizStart').classList.add('hidden');
+  document.getElementById('quizResult').classList.add('hidden');
+  document.getElementById('quizQuestion').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const { questions, current, score } = quizState;
+  const q = questions[current];
+
+  document.getElementById('qProgress').textContent = `Question ${current + 1} of 20`;
+  document.getElementById('qScore').textContent = `Score: ${score}`;
+  document.getElementById('qProgressBar').style.width = `${((current + 1) / 20) * 100}%`;
+  document.getElementById('qCategory').textContent = q.category;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qFeedback').classList.add('hidden');
+  document.getElementById('qNext').classList.add('hidden');
+  quizState.answered = false;
+
+  const options = shuffle([q.a, ...q.wrong]);
+  const labels = ['A', 'B', 'C', 'D'];
+  document.getElementById('qOptions').innerHTML = options.map((opt, i) => `
+    <button onclick="answerQuestion(this, '${opt.replace(/'/g, "\\'")}', '${q.a.replace(/'/g, "\\'")}')"
+      class="quiz-option w-full text-left p-4 rounded-xl border-2 border-navy-200 hover:cursor-pointer flex items-start gap-3 transition">
+      <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-navy-100 text-navy-600 font-bold flex items-center justify-center text-sm">${labels[i]}</span>
+      <span class="pt-1 text-navy-800">${opt}</span>
+    </button>
+  `).join('');
+}
+
+function answerQuestion(btn, selected, correct) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+
+  const isCorrect = selected === correct;
+  if (isCorrect) quizState.score++;
+
+  // Mark all buttons
+  document.querySelectorAll('.quiz-option').forEach(el => {
+    el.classList.add('answered');
+    const optText = el.querySelector('span:last-child').textContent.trim();
+    if (optText === correct) {
+      el.classList.add('correct');
+      el.querySelector('span:first-child').innerHTML = '<svg class="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>';
+    } else if (optText === selected && !isCorrect) {
+      el.classList.add('incorrect');
+      el.querySelector('span:first-child').innerHTML = '<svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
+    }
+  });
+
+  // Show feedback
+  const fb = document.getElementById('qFeedback');
+  fb.classList.remove('hidden');
+  if (isCorrect) {
+    fb.className = 'mt-6 p-4 rounded-xl text-sm bg-emerald-50 text-emerald-800 border border-emerald-200';
+    fb.textContent = 'Correct!';
+  } else {
+    fb.className = 'mt-6 p-4 rounded-xl text-sm bg-red-50 text-red-800 border border-red-200';
+    fb.textContent = `Incorrect. The correct answer is: ${correct}`;
+  }
+
+  document.getElementById('qScore').textContent = `Score: ${quizState.score}`;
+
+  // Show next button or finish
+  const nextBtn = document.getElementById('qNext');
+  nextBtn.classList.remove('hidden');
+  nextBtn.textContent = quizState.current < 19 ? 'Next Question' : 'See Results';
+}
+
+function nextQuestion() {
+  quizState.current++;
+  if (quizState.current >= 20) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  document.getElementById('quizQuestion').classList.add('hidden');
+  document.getElementById('quizResult').classList.remove('hidden');
+
+  const { score } = quizState;
+  const pct = Math.round((score / 20) * 100);
+
+  let icon, title, msg;
+  if (pct >= 90) {
+    icon = '<div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6"><svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>';
+    title = 'Outstanding!';
+    msg = 'Excellent knowledge of the IRPCS. You\'re well prepared.';
+  } else if (pct >= 70) {
+    icon = '<div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6"><svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>';
+    title = 'Good Work!';
+    msg = 'Solid understanding. Review the rules you missed and try again.';
+  } else if (pct >= 50) {
+    icon = '<div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6"><svg class="w-12 h-12 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>';
+    title = 'Keep Studying';
+    msg = 'You\'re getting there. Spend more time on the rules and retake the quiz.';
+  } else {
+    icon = '<div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6"><svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>';
+    title = 'More Revision Needed';
+    msg = 'Review the rules thoroughly using the Rules tab, then try the quiz again.';
+  }
+
+  document.getElementById('resultIcon').outerHTML = icon;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultScore').textContent = `${score} / 20 (${pct}%)`;
+  document.getElementById('resultMsg').textContent = msg;
+}
+
+// ==================== INIT ====================
+buildSidebar();
+</script>
+
+</body>
+</html>
