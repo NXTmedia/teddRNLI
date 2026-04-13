@@ -582,100 +582,100 @@ const rules = [
 // ==================== QUIZ QUESTIONS ====================
 const allQuestions = [
   // Rule identification
-  { category: "Rule Identification", q: "Which rule covers 'Lookout'?", a: "Rule 5", wrong: ["Rule 6", "Rule 7", "Rule 8"] },
-  { category: "Rule Identification", q: "Which rule covers 'Safe Speed'?", a: "Rule 6", wrong: ["Rule 5", "Rule 7", "Rule 8"] },
-  { category: "Rule Identification", q: "Which rule covers 'Risk of Collision'?", a: "Rule 7", wrong: ["Rule 6", "Rule 8", "Rule 9"] },
-  { category: "Rule Identification", q: "Which rule covers 'Action to Avoid a Collision'?", a: "Rule 8", wrong: ["Rule 7", "Rule 9", "Rule 10"] },
-  { category: "Rule Identification", q: "Which rule covers 'Narrow Channels'?", a: "Rule 9", wrong: ["Rule 8", "Rule 10", "Rule 11"] },
-  { category: "Rule Identification", q: "Which rule covers 'Traffic Separation Schemes'?", a: "Rule 10", wrong: ["Rule 9", "Rule 11", "Rule 13"] },
-  { category: "Rule Identification", q: "Which rule covers 'Overtaking'?", a: "Rule 13", wrong: ["Rule 14", "Rule 15", "Rule 16"] },
-  { category: "Rule Identification", q: "Which rule covers 'Head-On Situation'?", a: "Rule 14", wrong: ["Rule 13", "Rule 15", "Rule 16"] },
-  { category: "Rule Identification", q: "Which rule covers 'Crossing Situations'?", a: "Rule 15", wrong: ["Rule 14", "Rule 16", "Rule 17"] },
-  { category: "Rule Identification", q: "Which rule covers 'Responsibilities Between Vessels'?", a: "Rule 18", wrong: ["Rule 17", "Rule 19", "Rule 15"] },
-  { category: "Rule Identification", q: "Which rule covers 'Manoeuvring and Warning Signals'?", a: "Rule 34", wrong: ["Rule 35", "Rule 30", "Rule 19"] },
-  { category: "Rule Identification", q: "Which rule covers 'Sound Signals in Restricted Visibility'?", a: "Rule 35", wrong: ["Rule 34", "Rule 19", "Rule 30"] },
+  { category: "Rule Identification", rule: 5, q: "Which rule covers 'Lookout'?", a: "Rule 5", wrong: ["Rule 6", "Rule 7", "Rule 8"] },
+  { category: "Rule Identification", rule: 6, q: "Which rule covers 'Safe Speed'?", a: "Rule 6", wrong: ["Rule 5", "Rule 7", "Rule 8"] },
+  { category: "Rule Identification", rule: 7, q: "Which rule covers 'Risk of Collision'?", a: "Rule 7", wrong: ["Rule 6", "Rule 8", "Rule 9"] },
+  { category: "Rule Identification", rule: 8, q: "Which rule covers 'Action to Avoid a Collision'?", a: "Rule 8", wrong: ["Rule 7", "Rule 9", "Rule 10"] },
+  { category: "Rule Identification", rule: 9, q: "Which rule covers 'Narrow Channels'?", a: "Rule 9", wrong: ["Rule 8", "Rule 10", "Rule 11"] },
+  { category: "Rule Identification", rule: 10, q: "Which rule covers 'Traffic Separation Schemes'?", a: "Rule 10", wrong: ["Rule 9", "Rule 11", "Rule 13"] },
+  { category: "Rule Identification", rule: 13, q: "Which rule covers 'Overtaking'?", a: "Rule 13", wrong: ["Rule 14", "Rule 15", "Rule 16"] },
+  { category: "Rule Identification", rule: 14, q: "Which rule covers 'Head-On Situation'?", a: "Rule 14", wrong: ["Rule 13", "Rule 15", "Rule 16"] },
+  { category: "Rule Identification", rule: 15, q: "Which rule covers 'Crossing Situations'?", a: "Rule 15", wrong: ["Rule 14", "Rule 16", "Rule 17"] },
+  { category: "Rule Identification", rule: 18, q: "Which rule covers 'Responsibilities Between Vessels'?", a: "Rule 18", wrong: ["Rule 17", "Rule 19", "Rule 15"] },
+  { category: "Rule Identification", rule: 34, q: "Which rule covers 'Manoeuvring and Warning Signals'?", a: "Rule 34", wrong: ["Rule 35", "Rule 30", "Rule 19"] },
+  { category: "Rule Identification", rule: 35, q: "Which rule covers 'Sound Signals in Restricted Visibility'?", a: "Rule 35", wrong: ["Rule 34", "Rule 19", "Rule 30"] },
 
   // Light definitions and angles
-  { category: "Lights & Shapes", q: "What is the arc of visibility of a masthead light?", a: "225 degrees", wrong: ["112.5 degrees", "135 degrees", "360 degrees"] },
-  { category: "Lights & Shapes", q: "What is the arc of visibility of each sidelight?", a: "112.5 degrees", wrong: ["225 degrees", "135 degrees", "67.5 degrees"] },
-  { category: "Lights & Shapes", q: "What is the arc of visibility of a sternlight?", a: "135 degrees", wrong: ["225 degrees", "112.5 degrees", "67.5 degrees"] },
-  { category: "Lights & Shapes", q: "What is the arc of visibility of an all-round light?", a: "360 degrees", wrong: ["225 degrees", "135 degrees", "270 degrees"] },
-  { category: "Lights & Shapes", q: "What colour is the sidelight on the starboard side?", a: "Green", wrong: ["Red", "White", "Yellow"] },
-  { category: "Lights & Shapes", q: "What colour is the sidelight on the port side?", a: "Red", wrong: ["Green", "White", "Yellow"] },
-  { category: "Lights & Shapes", q: "What colour is a towing light?", a: "Yellow", wrong: ["White", "Red", "Green"] },
-  { category: "Lights & Shapes", q: "A flashing light flashes at a frequency of at least how many flashes per minute?", a: "120 flashes per minute", wrong: ["60 flashes per minute", "90 flashes per minute", "180 flashes per minute"] },
-  { category: "Lights & Shapes", q: "What colour is a masthead light?", a: "White", wrong: ["Red", "Green", "Yellow"] },
+  { category: "Lights & Shapes", rule: 21, q: "What is the arc of visibility of a masthead light?", a: "225 degrees", wrong: ["112.5 degrees", "135 degrees", "360 degrees"] },
+  { category: "Lights & Shapes", rule: 21, q: "What is the arc of visibility of each sidelight?", a: "112.5 degrees", wrong: ["225 degrees", "135 degrees", "67.5 degrees"] },
+  { category: "Lights & Shapes", rule: 21, q: "What is the arc of visibility of a sternlight?", a: "135 degrees", wrong: ["225 degrees", "112.5 degrees", "67.5 degrees"] },
+  { category: "Lights & Shapes", rule: 21, q: "What is the arc of visibility of an all-round light?", a: "360 degrees", wrong: ["225 degrees", "135 degrees", "270 degrees"] },
+  { category: "Lights & Shapes", rule: 21, q: "What colour is the sidelight on the starboard side?", a: "Green", wrong: ["Red", "White", "Yellow"] },
+  { category: "Lights & Shapes", rule: 21, q: "What colour is the sidelight on the port side?", a: "Red", wrong: ["Green", "White", "Yellow"] },
+  { category: "Lights & Shapes", rule: 21, q: "What colour is a towing light?", a: "Yellow", wrong: ["White", "Red", "Green"] },
+  { category: "Lights & Shapes", rule: 21, q: "A flashing light flashes at a frequency of at least how many flashes per minute?", a: "120 flashes per minute", wrong: ["60 flashes per minute", "90 flashes per minute", "180 flashes per minute"] },
+  { category: "Lights & Shapes", rule: 21, q: "What colour is a masthead light?", a: "White", wrong: ["Red", "Green", "Yellow"] },
 
   // Vessel lights
-  { category: "Lights & Shapes", q: "A vessel not under command displays which lights in a vertical line?", a: "Two all-round red lights", wrong: ["Two all-round white lights", "Three all-round red lights", "Red, white, red lights"] },
-  { category: "Lights & Shapes", q: "A vessel restricted in her ability to manoeuvre displays three all-round lights in a vertical line. What are they?", a: "Red, white, red (top to bottom)", wrong: ["Red, red, white", "White, red, white", "Green, white, green"] },
-  { category: "Lights & Shapes", q: "What lights does a vessel constrained by her draught display in addition to normal power-driven vessel lights?", a: "Three all-round red lights in a vertical line", wrong: ["Two all-round red lights", "Three all-round white lights", "Two all-round green lights"] },
-  { category: "Lights & Shapes", q: "What day shape does a vessel constrained by her draught display?", a: "A cylinder", wrong: ["A ball", "A diamond", "A cone apex downwards"] },
-  { category: "Lights & Shapes", q: "A pilot vessel on duty displays two all-round lights at the masthead. What colours?", a: "White over red", wrong: ["Red over white", "Red over green", "Green over white"] },
-  { category: "Lights & Shapes", q: "What lights does a vessel at anchor display?", a: "An all-round white light in the fore part and an all-round white light at or near the stern at a lower level", wrong: ["Two all-round red lights", "A masthead light and sternlight", "Sidelights and a sternlight"] },
-  { category: "Lights & Shapes", q: "What additional lights does a vessel aground display (in addition to anchor lights)?", a: "Two all-round red lights in a vertical line", wrong: ["Two all-round green lights", "Three all-round white lights", "A flashing yellow light"] },
-  { category: "Lights & Shapes", q: "A vessel aground displays what day shapes?", a: "Three balls in a vertical line", wrong: ["Two balls in a vertical line", "A diamond", "A cylinder"] },
-  { category: "Lights & Shapes", q: "A vessel engaged in trawling displays two all-round lights in a vertical line. What are the colours?", a: "Green over white", wrong: ["Red over white", "White over green", "Red over green"] },
-  { category: "Lights & Shapes", q: "A vessel engaged in fishing (other than trawling) displays two all-round lights. What are the colours?", a: "Red over white", wrong: ["Green over white", "White over red", "Red over green"] },
-  { category: "Lights & Shapes", q: "What is the day shape for a vessel proceeding under sail when also being propelled by machinery?", a: "A conical shape, apex downwards", wrong: ["A ball", "A diamond", "A cylinder"] },
-  { category: "Lights & Shapes", q: "When is a second masthead light NOT required on a power-driven vessel?", a: "When the vessel is less than 50 metres in length", wrong: ["When the vessel is less than 20 metres", "When the vessel is less than 100 metres", "When in restricted visibility"] },
-  { category: "Lights & Shapes", q: "An air-cushion vessel in non-displacement mode shows what additional light?", a: "An all-round flashing yellow light", wrong: ["An all-round flashing red light", "An all-round flashing white light", "Two all-round green lights"] },
+  { category: "Lights & Shapes", rule: 27, q: "A vessel not under command displays which lights in a vertical line?", a: "Two all-round red lights", wrong: ["Two all-round white lights", "Three all-round red lights", "Red, white, red lights"] },
+  { category: "Lights & Shapes", rule: 27, q: "A vessel restricted in her ability to manoeuvre displays three all-round lights in a vertical line. What are they?", a: "Red, white, red (top to bottom)", wrong: ["Red, red, white", "White, red, white", "Green, white, green"] },
+  { category: "Lights & Shapes", rule: 28, q: "What lights does a vessel constrained by her draught display in addition to normal power-driven vessel lights?", a: "Three all-round red lights in a vertical line", wrong: ["Two all-round red lights", "Three all-round white lights", "Two all-round green lights"] },
+  { category: "Lights & Shapes", rule: 28, q: "What day shape does a vessel constrained by her draught display?", a: "A cylinder", wrong: ["A ball", "A diamond", "A cone apex downwards"] },
+  { category: "Lights & Shapes", rule: 29, q: "A pilot vessel on duty displays two all-round lights at the masthead. What colours?", a: "White over red", wrong: ["Red over white", "Red over green", "Green over white"] },
+  { category: "Lights & Shapes", rule: 30, q: "What lights does a vessel at anchor display?", a: "An all-round white light in the fore part and an all-round white light at or near the stern at a lower level", wrong: ["Two all-round red lights", "A masthead light and sternlight", "Sidelights and a sternlight"] },
+  { category: "Lights & Shapes", rule: 30, q: "What additional lights does a vessel aground display (in addition to anchor lights)?", a: "Two all-round red lights in a vertical line", wrong: ["Two all-round green lights", "Three all-round white lights", "A flashing yellow light"] },
+  { category: "Lights & Shapes", rule: 30, q: "A vessel aground displays what day shapes?", a: "Three balls in a vertical line", wrong: ["Two balls in a vertical line", "A diamond", "A cylinder"] },
+  { category: "Lights & Shapes", rule: 26, q: "A vessel engaged in trawling displays two all-round lights in a vertical line. What are the colours?", a: "Green over white", wrong: ["Red over white", "White over green", "Red over green"] },
+  { category: "Lights & Shapes", rule: 26, q: "A vessel engaged in fishing (other than trawling) displays two all-round lights. What are the colours?", a: "Red over white", wrong: ["Green over white", "White over red", "Red over green"] },
+  { category: "Lights & Shapes", rule: 25, q: "What is the day shape for a vessel proceeding under sail when also being propelled by machinery?", a: "A conical shape, apex downwards", wrong: ["A ball", "A diamond", "A cylinder"] },
+  { category: "Lights & Shapes", rule: 23, q: "When is a second masthead light NOT required on a power-driven vessel?", a: "When the vessel is less than 50 metres in length", wrong: ["When the vessel is less than 20 metres", "When the vessel is less than 100 metres", "When in restricted visibility"] },
+  { category: "Lights & Shapes", rule: 23, q: "An air-cushion vessel in non-displacement mode shows what additional light?", a: "An all-round flashing yellow light", wrong: ["An all-round flashing red light", "An all-round flashing white light", "Two all-round green lights"] },
 
   // Sound signals
-  { category: "Sound Signals", q: "One short blast on the whistle means what?", a: "I am altering my course to starboard", wrong: ["I am altering my course to port", "I am operating astern propulsion", "I am in doubt about your intentions"] },
-  { category: "Sound Signals", q: "Two short blasts on the whistle means what?", a: "I am altering my course to port", wrong: ["I am altering my course to starboard", "I am operating astern propulsion", "I intend to overtake you"] },
-  { category: "Sound Signals", q: "Three short blasts on the whistle means what?", a: "I am operating astern propulsion", wrong: ["I am altering my course to starboard", "I am altering my course to port", "I am in distress"] },
-  { category: "Sound Signals", q: "At least five short and rapid blasts on the whistle means what?", a: "Doubt about the other vessel's intentions or actions", wrong: ["I am operating astern propulsion", "I intend to overtake", "I am altering course to starboard"] },
-  { category: "Sound Signals", q: "What signal indicates 'I intend to overtake you on your starboard side' in a narrow channel?", a: "Two prolonged blasts followed by one short blast", wrong: ["Two prolonged blasts followed by two short blasts", "One prolonged blast followed by one short blast", "One prolonged blast"] },
-  { category: "Sound Signals", q: "What signal indicates 'I intend to overtake you on your port side' in a narrow channel?", a: "Two prolonged blasts followed by two short blasts", wrong: ["Two prolonged blasts followed by one short blast", "One prolonged blast followed by two short blasts", "Two short blasts"] },
-  { category: "Sound Signals", q: "A vessel nearing a bend in a narrow channel sounds what signal?", a: "One prolonged blast", wrong: ["Two short blasts", "Five short and rapid blasts", "One short blast"] },
+  { category: "Sound Signals", rule: 34, q: "One short blast on the whistle means what?", a: "I am altering my course to starboard", wrong: ["I am altering my course to port", "I am operating astern propulsion", "I am in doubt about your intentions"] },
+  { category: "Sound Signals", rule: 34, q: "Two short blasts on the whistle means what?", a: "I am altering my course to port", wrong: ["I am altering my course to starboard", "I am operating astern propulsion", "I intend to overtake you"] },
+  { category: "Sound Signals", rule: 34, q: "Three short blasts on the whistle means what?", a: "I am operating astern propulsion", wrong: ["I am altering my course to starboard", "I am altering my course to port", "I am in distress"] },
+  { category: "Sound Signals", rule: 34, q: "At least five short and rapid blasts on the whistle means what?", a: "Doubt about the other vessel's intentions or actions", wrong: ["I am operating astern propulsion", "I intend to overtake", "I am altering course to starboard"] },
+  { category: "Sound Signals", rule: 34, q: "What signal indicates 'I intend to overtake you on your starboard side' in a narrow channel?", a: "Two prolonged blasts followed by one short blast", wrong: ["Two prolonged blasts followed by two short blasts", "One prolonged blast followed by one short blast", "One prolonged blast"] },
+  { category: "Sound Signals", rule: 34, q: "What signal indicates 'I intend to overtake you on your port side' in a narrow channel?", a: "Two prolonged blasts followed by two short blasts", wrong: ["Two prolonged blasts followed by one short blast", "One prolonged blast followed by two short blasts", "Two short blasts"] },
+  { category: "Sound Signals", rule: 34, q: "A vessel nearing a bend in a narrow channel sounds what signal?", a: "One prolonged blast", wrong: ["Two short blasts", "Five short and rapid blasts", "One short blast"] },
 
   // Restricted visibility sound signals
-  { category: "Sound Signals", q: "In restricted visibility, a power-driven vessel making way sounds what signal?", a: "One prolonged blast at intervals of not more than 2 minutes", wrong: ["Two prolonged blasts every 2 minutes", "One short blast every minute", "Three blasts: one prolonged, two short"] },
-  { category: "Sound Signals", q: "In restricted visibility, a power-driven vessel stopped (not making way) sounds what signal?", a: "Two prolonged blasts in succession at intervals of not more than 2 minutes", wrong: ["One prolonged blast every 2 minutes", "Three short blasts every 2 minutes", "Rapid ringing of a bell"] },
-  { category: "Sound Signals", q: "In restricted visibility, a sailing vessel sounds what signal?", a: "One prolonged followed by two short blasts at intervals of not more than 2 minutes", wrong: ["One prolonged blast every 2 minutes", "Two prolonged blasts every 2 minutes", "Rapid bell ringing every minute"] },
-  { category: "Sound Signals", q: "In restricted visibility, a vessel at anchor sounds what signal?", a: "Rapid ringing of the bell for about 5 seconds at intervals of not more than 1 minute", wrong: ["One prolonged blast every 2 minutes", "Two prolonged blasts every 2 minutes", "Three short blasts every minute"] },
-  { category: "Sound Signals", q: "A vessel being towed in restricted visibility sounds what signal?", a: "One prolonged followed by three short blasts", wrong: ["One prolonged followed by two short blasts", "Two prolonged blasts", "Rapid ringing of the bell"] },
-  { category: "Sound Signals", q: "A pilot vessel on duty may sound an identity signal of what?", a: "Four short blasts", wrong: ["Three short blasts", "Five short blasts", "Two prolonged blasts"] },
-  { category: "Sound Signals", q: "In restricted visibility, a vessel aground gives what additional signal before and after the bell?", a: "Three separate and distinct strokes on the bell", wrong: ["Five rapid strokes on the bell", "One prolonged blast on the whistle", "Two short blasts on the whistle"] },
+  { category: "Sound Signals", rule: 35, q: "In restricted visibility, a power-driven vessel making way sounds what signal?", a: "One prolonged blast at intervals of not more than 2 minutes", wrong: ["Two prolonged blasts every 2 minutes", "One short blast every minute", "Three blasts: one prolonged, two short"] },
+  { category: "Sound Signals", rule: 35, q: "In restricted visibility, a power-driven vessel stopped (not making way) sounds what signal?", a: "Two prolonged blasts in succession at intervals of not more than 2 minutes", wrong: ["One prolonged blast every 2 minutes", "Three short blasts every 2 minutes", "Rapid ringing of a bell"] },
+  { category: "Sound Signals", rule: 35, q: "In restricted visibility, a sailing vessel sounds what signal?", a: "One prolonged followed by two short blasts at intervals of not more than 2 minutes", wrong: ["One prolonged blast every 2 minutes", "Two prolonged blasts every 2 minutes", "Rapid bell ringing every minute"] },
+  { category: "Sound Signals", rule: 35, q: "In restricted visibility, a vessel at anchor sounds what signal?", a: "Rapid ringing of the bell for about 5 seconds at intervals of not more than 1 minute", wrong: ["One prolonged blast every 2 minutes", "Two prolonged blasts every 2 minutes", "Three short blasts every minute"] },
+  { category: "Sound Signals", rule: 35, q: "A vessel being towed in restricted visibility sounds what signal?", a: "One prolonged followed by three short blasts", wrong: ["One prolonged followed by two short blasts", "Two prolonged blasts", "Rapid ringing of the bell"] },
+  { category: "Sound Signals", rule: 35, q: "A pilot vessel on duty may sound an identity signal of what?", a: "Four short blasts", wrong: ["Three short blasts", "Five short blasts", "Two prolonged blasts"] },
+  { category: "Sound Signals", rule: 35, q: "In restricted visibility, a vessel aground gives what additional signal before and after the bell?", a: "Three separate and distinct strokes on the bell", wrong: ["Five rapid strokes on the bell", "One prolonged blast on the whistle", "Two short blasts on the whistle"] },
 
   // Steering and sailing rules
-  { category: "Steering & Sailing", q: "In a head-on situation between two power-driven vessels, each vessel should alter course to which side?", a: "Starboard", wrong: ["Port", "Either side", "The vessel on the right alters course"] },
-  { category: "Steering & Sailing", q: "In a crossing situation, which vessel is the give-way vessel?", a: "The vessel which has the other on her starboard side", wrong: ["The vessel which has the other on her port side", "The larger vessel", "The slower vessel"] },
-  { category: "Steering & Sailing", q: "A vessel is deemed to be overtaking when coming up from a direction more than how many degrees abaft the beam?", a: "22.5 degrees", wrong: ["45 degrees", "67.5 degrees", "10 degrees"] },
-  { category: "Steering & Sailing", q: "In a narrow channel, a vessel should keep to which side?", a: "Starboard side", wrong: ["Port side", "The centre", "Whichever side is deeper"] },
-  { category: "Steering & Sailing", q: "What should a stand-on vessel do initially?", a: "Keep her course and speed", wrong: ["Alter course to starboard", "Slow down immediately", "Sound five short blasts"] },
-  { category: "Steering & Sailing", q: "When crossing traffic lanes in a traffic separation scheme, a vessel should cross at what angle?", a: "As nearly as practicable at right angles to the direction of traffic flow", wrong: ["At 45 degrees to traffic flow", "Parallel to traffic flow", "At the smallest angle possible"] },
-  { category: "Steering & Sailing", q: "If there is doubt about whether a vessel is overtaking, what should she assume?", a: "That she IS overtaking and act accordingly", wrong: ["That she is crossing", "That she has right of way", "That the other vessel will give way"] },
-  { category: "Steering & Sailing", q: "Rule 8 states that alterations of course and/or speed to avoid collision should be:", a: "Large enough to be readily apparent to another vessel", wrong: ["As small as possible", "Made only as a last resort", "Communicated by radio first"] },
-  { category: "Steering & Sailing", q: "Under Rule 2 (Responsibility), a departure from the rules may be necessary to:", a: "Avoid immediate danger", wrong: ["Save time in heavy traffic", "Comply with company policy", "Allow faster vessels to pass"] },
-  { category: "Steering & Sailing", q: "In restricted visibility, a vessel detecting another by radar should avoid altering course to port for a vessel where?", a: "Forward of the beam (other than one being overtaken)", wrong: ["Abaft the beam", "Abeam", "On the starboard quarter"] },
+  { category: "Steering & Sailing", rule: 14, q: "In a head-on situation between two power-driven vessels, each vessel should alter course to which side?", a: "Starboard", wrong: ["Port", "Either side", "The vessel on the right alters course"] },
+  { category: "Steering & Sailing", rule: 15, q: "In a crossing situation, which vessel is the give-way vessel?", a: "The vessel which has the other on her starboard side", wrong: ["The vessel which has the other on her port side", "The larger vessel", "The slower vessel"] },
+  { category: "Steering & Sailing", rule: 13, q: "A vessel is deemed to be overtaking when coming up from a direction more than how many degrees abaft the beam?", a: "22.5 degrees", wrong: ["45 degrees", "67.5 degrees", "10 degrees"] },
+  { category: "Steering & Sailing", rule: 9, q: "In a narrow channel, a vessel should keep to which side?", a: "Starboard side", wrong: ["Port side", "The centre", "Whichever side is deeper"] },
+  { category: "Steering & Sailing", rule: 17, q: "What should a stand-on vessel do initially?", a: "Keep her course and speed", wrong: ["Alter course to starboard", "Slow down immediately", "Sound five short blasts"] },
+  { category: "Steering & Sailing", rule: 10, q: "When crossing traffic lanes in a traffic separation scheme, a vessel should cross at what angle?", a: "As nearly as practicable at right angles to the direction of traffic flow", wrong: ["At 45 degrees to traffic flow", "Parallel to traffic flow", "At the smallest angle possible"] },
+  { category: "Steering & Sailing", rule: 13, q: "If there is doubt about whether a vessel is overtaking, what should she assume?", a: "That she IS overtaking and act accordingly", wrong: ["That she is crossing", "That she has right of way", "That the other vessel will give way"] },
+  { category: "Steering & Sailing", rule: 8, q: "Rule 8 states that alterations of course and/or speed to avoid collision should be:", a: "Large enough to be readily apparent to another vessel", wrong: ["As small as possible", "Made only as a last resort", "Communicated by radio first"] },
+  { category: "Steering & Sailing", rule: 2, q: "Under Rule 2 (Responsibility), a departure from the rules may be necessary to:", a: "Avoid immediate danger", wrong: ["Save time in heavy traffic", "Comply with company policy", "Allow faster vessels to pass"] },
+  { category: "Steering & Sailing", rule: 19, q: "In restricted visibility, a vessel detecting another by radar should avoid altering course to port for a vessel where?", a: "Forward of the beam (other than one being overtaken)", wrong: ["Abaft the beam", "Abeam", "On the starboard quarter"] },
 
   // Responsibilities between vessels
-  { category: "Responsibilities", q: "According to Rule 18, a power-driven vessel shall keep out of the way of all EXCEPT which type?", a: "Another power-driven vessel (not listed)", wrong: ["A vessel not under command", "A sailing vessel", "A vessel engaged in fishing"] },
-  { category: "Responsibilities", q: "Which vessel type has the highest priority (least obligation to give way) under Rule 18?", a: "A vessel not under command", wrong: ["A sailing vessel", "A vessel engaged in fishing", "A power-driven vessel"] },
-  { category: "Responsibilities", q: "Under Rule 18, a sailing vessel must keep out of the way of which vessel types?", a: "Vessels not under command, restricted in ability to manoeuvre, and engaged in fishing", wrong: ["Only vessels not under command", "Power-driven vessels", "All other vessel types"] },
-  { category: "Responsibilities", q: "Under Rule 18, which vessels shall keep out of the way of a vessel not under command?", a: "All other vessels (power-driven, sailing, and fishing)", wrong: ["Only power-driven vessels", "Only sailing vessels", "No vessels need to give way"] },
-  { category: "Responsibilities", q: "A vessel of less than 20 metres or a sailing vessel shall not impede which vessel in a narrow channel?", a: "A vessel which can safely navigate only within the narrow channel", wrong: ["Any other vessel", "Only power-driven vessels", "Only vessels over 100 metres"] },
-  { category: "Responsibilities", q: "In a traffic separation scheme, a vessel of less than 20 metres shall not impede:", a: "A power-driven vessel following a traffic lane", wrong: ["A sailing vessel", "A vessel engaged in fishing", "A vessel at anchor"] },
+  { category: "Responsibilities", rule: 18, q: "According to Rule 18, a power-driven vessel shall keep out of the way of all EXCEPT which type?", a: "Another power-driven vessel (not listed)", wrong: ["A vessel not under command", "A sailing vessel", "A vessel engaged in fishing"] },
+  { category: "Responsibilities", rule: 18, q: "Which vessel type has the highest priority (least obligation to give way) under Rule 18?", a: "A vessel not under command", wrong: ["A sailing vessel", "A vessel engaged in fishing", "A power-driven vessel"] },
+  { category: "Responsibilities", rule: 18, q: "Under Rule 18, a sailing vessel must keep out of the way of which vessel types?", a: "Vessels not under command, restricted in ability to manoeuvre, and engaged in fishing", wrong: ["Only vessels not under command", "Power-driven vessels", "All other vessel types"] },
+  { category: "Responsibilities", rule: 18, q: "Under Rule 18, which vessels shall keep out of the way of a vessel not under command?", a: "All other vessels (power-driven, sailing, and fishing)", wrong: ["Only power-driven vessels", "Only sailing vessels", "No vessels need to give way"] },
+  { category: "Responsibilities", rule: 9, q: "A vessel of less than 20 metres or a sailing vessel shall not impede which vessel in a narrow channel?", a: "A vessel which can safely navigate only within the narrow channel", wrong: ["Any other vessel", "Only power-driven vessels", "Only vessels over 100 metres"] },
+  { category: "Responsibilities", rule: 10, q: "In a traffic separation scheme, a vessel of less than 20 metres shall not impede:", a: "A power-driven vessel following a traffic lane", wrong: ["A sailing vessel", "A vessel engaged in fishing", "A vessel at anchor"] },
 
   // Specific values and details
-  { category: "Specific Details", q: "When does a towing vessel show three masthead lights instead of two?", a: "When the length of the tow exceeds 200 metres", wrong: ["When the tow exceeds 100 metres", "When the tow exceeds 50 metres", "When towing at night"] },
-  { category: "Specific Details", q: "It is dangerous for another vessel to approach within what distance of a mineclearance vessel?", a: "1000 metres", wrong: ["500 metres", "200 metres", "2000 metres"] },
-  { category: "Specific Details", q: "When should navigation lights be displayed?", a: "From sunset to sunrise", wrong: ["Only at night in open water", "At all times", "When visibility is less than 2 miles"] },
-  { category: "Specific Details", q: "A vessel at anchor of 100 metres or more in length shall also sound what in the after part?", a: "A gong rapidly for about 5 seconds", wrong: ["A bell rapidly for 5 seconds", "A whistle blast", "Nothing additional is required"] },
-  { category: "Specific Details", q: "Which vessels may always use inshore traffic zones?", a: "Vessels of less than 20m, sailing vessels, and vessels engaged in fishing", wrong: ["Only vessels less than 12m", "All vessels under 50m", "Only fishing vessels"] },
-  { category: "Specific Details", q: "The sternlight shows light how many degrees from right aft on each side?", a: "67.5 degrees", wrong: ["22.5 degrees", "45 degrees", "112.5 degrees"] },
-  { category: "Specific Details", q: "In restricted visibility, sound signals for most vessel types are given at intervals of not more than:", a: "2 minutes", wrong: ["1 minute", "3 minutes", "5 minutes"] },
-  { category: "Specific Details", q: "A vessel at anchor rings the bell at intervals of not more than:", a: "1 minute", wrong: ["2 minutes", "30 seconds", "5 minutes"] },
-  { category: "Specific Details", q: "How long is each flash in a light signal supplementing whistle signals (Rule 34)?", a: "About one second", wrong: ["About two seconds", "About half a second", "About three seconds"] },
-  { category: "Specific Details", q: "A diving vessel shall display a rigid replica of which flag, not less than 1 metre in height?", a: "International Code Flag 'A'", wrong: ["International Code Flag 'B'", "International Code Flag 'D'", "International Code Flag 'O'"] },
-  { category: "Specific Details", q: "Fishing gear extending more than what distance requires an additional light/shape?", a: "150 metres horizontally from the vessel", wrong: ["100 metres", "200 metres", "50 metres"] },
-  { category: "Specific Details", q: "A power-driven vessel of less than what length may show an all-round white light instead of masthead light, sternlight?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
-  { category: "Specific Details", q: "Vessels of less than what length are exempt from displaying lights and shapes for vessels not under command (except diving)?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
-  { category: "Specific Details", q: "A vessel aground of less than what length need not show the aground lights/shapes?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
-  { category: "Specific Details", q: "Rule 5 (Lookout) requires a lookout by which means?", a: "Sight and hearing as well as all available means", wrong: ["Sight only", "Radar only", "Sight and radar only"] },
-  { category: "Specific Details", q: "Risk of collision shall be deemed to exist if the compass bearing of an approaching vessel does what?", a: "Does not appreciably change", wrong: ["Changes rapidly", "Changes by more than 5 degrees", "Remains steady at 90 degrees"] },
+  { category: "Specific Details", rule: 24, q: "When does a towing vessel show three masthead lights instead of two?", a: "When the length of the tow exceeds 200 metres", wrong: ["When the tow exceeds 100 metres", "When the tow exceeds 50 metres", "When towing at night"] },
+  { category: "Specific Details", rule: 27, q: "It is dangerous for another vessel to approach within what distance of a mineclearance vessel?", a: "1000 metres", wrong: ["500 metres", "200 metres", "2000 metres"] },
+  { category: "Specific Details", rule: 20, q: "When should navigation lights be displayed?", a: "From sunset to sunrise", wrong: ["Only at night in open water", "At all times", "When visibility is less than 2 miles"] },
+  { category: "Specific Details", rule: 35, q: "A vessel at anchor of 100 metres or more in length shall also sound what in the after part?", a: "A gong rapidly for about 5 seconds", wrong: ["A bell rapidly for 5 seconds", "A whistle blast", "Nothing additional is required"] },
+  { category: "Specific Details", rule: 10, q: "Which vessels may always use inshore traffic zones?", a: "Vessels of less than 20m, sailing vessels, and vessels engaged in fishing", wrong: ["Only vessels less than 12m", "All vessels under 50m", "Only fishing vessels"] },
+  { category: "Specific Details", rule: 21, q: "The sternlight shows light how many degrees from right aft on each side?", a: "67.5 degrees", wrong: ["22.5 degrees", "45 degrees", "112.5 degrees"] },
+  { category: "Specific Details", rule: 35, q: "In restricted visibility, sound signals for most vessel types are given at intervals of not more than:", a: "2 minutes", wrong: ["1 minute", "3 minutes", "5 minutes"] },
+  { category: "Specific Details", rule: 35, q: "A vessel at anchor rings the bell at intervals of not more than:", a: "1 minute", wrong: ["2 minutes", "30 seconds", "5 minutes"] },
+  { category: "Specific Details", rule: 34, q: "How long is each flash in a light signal supplementing whistle signals (Rule 34)?", a: "About one second", wrong: ["About two seconds", "About half a second", "About three seconds"] },
+  { category: "Specific Details", rule: 27, q: "A diving vessel shall display a rigid replica of which flag, not less than 1 metre in height?", a: "International Code Flag 'A'", wrong: ["International Code Flag 'B'", "International Code Flag 'D'", "International Code Flag 'O'"] },
+  { category: "Specific Details", rule: 26, q: "Fishing gear extending more than what distance requires an additional light/shape?", a: "150 metres horizontally from the vessel", wrong: ["100 metres", "200 metres", "50 metres"] },
+  { category: "Specific Details", rule: 23, q: "A power-driven vessel of less than what length may show an all-round white light instead of masthead light, sternlight?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
+  { category: "Specific Details", rule: 27, q: "Vessels of less than what length are exempt from displaying lights and shapes for vessels not under command (except diving)?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
+  { category: "Specific Details", rule: 30, q: "A vessel aground of less than what length need not show the aground lights/shapes?", a: "12 metres", wrong: ["7 metres", "20 metres", "50 metres"] },
+  { category: "Specific Details", rule: 5, q: "Rule 5 (Lookout) requires a lookout by which means?", a: "Sight and hearing as well as all available means", wrong: ["Sight only", "Radar only", "Sight and radar only"] },
+  { category: "Specific Details", rule: 7, q: "Risk of collision shall be deemed to exist if the compass bearing of an approaching vessel does what?", a: "Does not appreciably change", wrong: ["Changes rapidly", "Changes by more than 5 degrees", "Remains steady at 90 degrees"] },
 ];
 
 // ==================== APP STATE ====================
@@ -721,8 +721,26 @@ function selectRule(idx) {
 
   // Render content
   const additional = rule.additional ? '<span class="inline-block bg-sea-100 text-sea-700 text-xs font-medium px-2 py-0.5 rounded-full ml-2">Additional Rule</span>' : '';
+  const prevRule = idx > 0 ? rules[idx - 1] : null;
+  const nextRule = idx < rules.length - 1 ? rules[idx + 1] : null;
+  const prevBtn = prevRule
+    ? `<button onclick="selectRule(${idx - 1})" class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-navy-200 hover:border-sea-400 hover:bg-sea-50 text-sm transition shadow-sm">
+        <svg class="w-4 h-4 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <span class="hidden sm:inline text-navy-500">Rule ${prevRule.number}</span><span class="sm:hidden text-navy-500">Prev</span>
+      </button>`
+    : '<div></div>';
+  const nextBtn = nextRule
+    ? `<button onclick="selectRule(${idx + 1})" class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-navy-200 hover:border-sea-400 hover:bg-sea-50 text-sm transition shadow-sm">
+        <span class="hidden sm:inline text-navy-500">Rule ${nextRule.number}</span><span class="sm:hidden text-navy-500">Next</span>
+        <svg class="w-4 h-4 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>`
+    : '<div></div>';
+  const navBar = `<div class="flex justify-between items-center mb-6">${prevBtn}${nextBtn}</div>`;
+  const navBarBottom = `<div class="flex justify-between items-center mt-6">${prevBtn}${nextBtn}</div>`;
+
   document.getElementById('ruleContent').innerHTML = `
     <div class="fade-in">
+      ${navBar}
       <div class="mb-6">
         <p class="text-xs font-semibold text-sea-600 uppercase tracking-wider mb-1">Part ${rule.part} — ${rule.partTitle}${rule.section ? ' / ' + rule.section : ''}</p>
         <h2 class="text-2xl md:text-3xl font-bold text-navy-900">Rule ${rule.number} — ${rule.title}${additional}</h2>
@@ -730,6 +748,7 @@ function selectRule(idx) {
       <div class="rule-content bg-white rounded-xl shadow-sm border border-navy-100 p-6 md:p-8 text-navy-800 leading-relaxed">
         ${rule.content}
       </div>
+      ${navBarBottom}
     </div>`;
 
   // Close mobile sidebar
@@ -781,6 +800,32 @@ function showView(view) {
   const activeTab = document.getElementById(view === 'rules' ? 'tabRules' : 'tabQuiz');
   activeTab.classList.add('bg-sea-700', 'text-white');
   activeTab.classList.remove('text-navy-300', 'hover:text-white', 'hover:bg-navy-800');
+
+  // When returning to quiz, restore the correct panel visibility
+  if (view === 'quiz' && quizState.questions.length > 0) {
+    document.getElementById('quizStart').classList.add('hidden');
+    if (quizState.current >= 20) {
+      document.getElementById('quizQuestion').classList.add('hidden');
+      document.getElementById('quizResult').classList.remove('hidden');
+    } else {
+      document.getElementById('quizQuestion').classList.remove('hidden');
+      document.getElementById('quizResult').classList.add('hidden');
+    }
+  }
+}
+
+// Helper: find the rules array index for a given rule number
+function ruleIndexByNumber(ruleNum) {
+  return rules.findIndex(r => r.number === ruleNum);
+}
+
+// Navigate to a rule from the quiz (switches to rules view)
+function viewRuleFromQuiz(ruleNum) {
+  const idx = ruleIndexByNumber(ruleNum);
+  if (idx !== -1) {
+    showView('rules');
+    selectRule(idx);
+  }
 }
 
 // ==================== QUIZ ====================
@@ -809,16 +854,18 @@ function renderQuestion() {
   document.getElementById('qProgress').textContent = `Question ${current + 1} of 20`;
   document.getElementById('qScore').textContent = `Score: ${score}`;
   document.getElementById('qProgressBar').style.width = `${((current + 1) / 20) * 100}%`;
-  document.getElementById('qCategory').textContent = q.category;
+  const ruleData = rules.find(r => r.number === q.rule);
+  const ruleLabel = ruleData ? `Rule ${ruleData.number} — ${ruleData.title}` : `Rule ${q.rule}`;
+  document.getElementById('qCategory').innerHTML = `${q.category} &middot; <a href="#" onclick="viewRuleFromQuiz(${q.rule}); return false;" class="text-sea-600 hover:text-sea-800 underline decoration-dotted underline-offset-2">View ${ruleLabel}</a>`;
   document.getElementById('qText').textContent = q.q;
   document.getElementById('qFeedback').classList.add('hidden');
   document.getElementById('qNext').classList.add('hidden');
   quizState.answered = false;
 
-  const options = shuffle([q.a, ...q.wrong]);
+  quizState.options = shuffle([q.a, ...q.wrong]);
   const labels = ['A', 'B', 'C', 'D'];
-  document.getElementById('qOptions').innerHTML = options.map((opt, i) => `
-    <button onclick="answerQuestion(this, '${opt.replace(/'/g, "\\'")}', '${q.a.replace(/'/g, "\\'")}')"
+  document.getElementById('qOptions').innerHTML = quizState.options.map((opt, i) => `
+    <button data-idx="${i}" onclick="answerQuestion(${i})"
       class="quiz-option w-full text-left p-4 rounded-xl border-2 border-navy-200 hover:cursor-pointer flex items-start gap-3 transition">
       <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-navy-100 text-navy-600 font-bold flex items-center justify-center text-sm">${labels[i]}</span>
       <span class="pt-1 text-navy-800">${opt}</span>
@@ -826,21 +873,24 @@ function renderQuestion() {
   `).join('');
 }
 
-function answerQuestion(btn, selected, correct) {
+function answerQuestion(idx) {
   if (quizState.answered) return;
   quizState.answered = true;
 
+  const selected = quizState.options[idx];
+  const correct = quizState.questions[quizState.current].a;
   const isCorrect = selected === correct;
   if (isCorrect) quizState.score++;
 
-  // Mark all buttons
+  // Mark all buttons by index
   document.querySelectorAll('.quiz-option').forEach(el => {
     el.classList.add('answered');
-    const optText = el.querySelector('span:last-child').textContent.trim();
-    if (optText === correct) {
+    const elIdx = parseInt(el.dataset.idx);
+    const elText = quizState.options[elIdx];
+    if (elText === correct) {
       el.classList.add('correct');
       el.querySelector('span:first-child').innerHTML = '<svg class="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>';
-    } else if (optText === selected && !isCorrect) {
+    } else if (elIdx === idx && !isCorrect) {
       el.classList.add('incorrect');
       el.querySelector('span:first-child').innerHTML = '<svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
     }
